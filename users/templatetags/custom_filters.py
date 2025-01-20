@@ -24,4 +24,9 @@ def div(value, arg):
     try:
         return int(value) / int(arg)
     except (ValueError, TypeError, ZeroDivisionError):
-        return value 
+        return value
+
+@register.filter
+def split(value, arg):
+    """Divide uma string em lista usando o separador fornecido"""
+    return value.split(arg) 
