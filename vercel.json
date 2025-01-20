@@ -20,5 +20,6 @@
         "DJANGO_SETTINGS_MODULE": "config.settings",
         "ALLOWED_HOSTS": ".vercel.app",
         "PYTHON_VERSION": "3.11"
-    }
+    },
+    "buildCommand": "chmod +x build_files.sh && ./build_files.sh"
 } 

@@ -5,9 +5,12 @@ from django.utils import timezone
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.core.files.storage import default_storage
-from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
+
+# Use o cloudinary para manipulação de imagens
+import cloudinary
+import cloudinary.uploader
 
 # Primeiro definimos Estado e Cidade
 class Estado(models.Model):

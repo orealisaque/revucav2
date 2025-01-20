@@ -9,4 +9,6 @@ python-dotenv
 requests
 django-cloudinary-storage
 stripe
+Pillow
+cloudinary
 # ... outros requisitos específicos do seu projeto 
