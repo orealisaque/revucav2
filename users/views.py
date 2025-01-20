@@ -145,3 +145,28 @@ def get_cidades(request):
         
     cidades = IBGEService.get_cidades(uf)
     return JsonResponse(cidades, safe=False) 
+
+@login_required
+def profile_update(request):
+    try:
+        profile = request.user.acompanhanteprofile
+    except AcompanhanteProfile.DoesNotExist:
+        profile = AcompanhanteProfile.objects.create(usuario=request.user)
+
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=profile)
+        user_form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        
+        if form.is_valid() and user_form.is_valid():
+            form.save()
+            user_form.save()
+            messages.success(request, 'Perfil atualizado com sucesso!')
+            return redirect('users:profile')
+    else:
+        form = ProfileUpdateForm(instance=profile)
+        user_form = UserProfileForm(instance=request.user)
+    
+    return render(request, 'users/profile_update.html', {
+        'form': form,
+        'user_form': user_form
+    }) 
