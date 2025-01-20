@@ -14,8 +14,8 @@ import cloudinary.uploader
 
 # Primeiro definimos Estado e Cidade
 class Estado(models.Model):
-    sigla = models.CharField(max_length=2, unique=True)
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(max_length=50)
+    sigla = models.CharField(max_length=2)
 
     def __str__(self):
         return self.nome
@@ -25,10 +25,10 @@ class Estado(models.Model):
 
 class Cidade(models.Model):
     nome = models.CharField(max_length=100)
-    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, related_name='cidades')
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.nome} - {self.estado.sigla}"
+        return self.nome
 
     class Meta:
         ordering = ['nome']
@@ -91,10 +91,8 @@ class CustomUser(AbstractUser):
         blank=True,
         help_text='Máximo de 200 caracteres'
     )
-    cidade = models.CharField(max_length=100, blank=True)
-    estado = models.CharField(max_length=2, blank=True)
-    cidade_ref = models.ForeignKey('Cidade', on_delete=models.SET_NULL, null=True, blank=True)
-    estado_ref = models.ForeignKey('Estado', on_delete=models.SET_NULL, null=True, blank=True)
+    cidade = models.ForeignKey(Cidade, on_delete=models.SET_NULL, null=True, blank=True)
+    estado = models.ForeignKey(Estado, on_delete=models.SET_NULL, null=True, blank=True)
     
     # Redes sociais
     instagram = models.CharField(
@@ -162,12 +160,9 @@ class CustomUser(AbstractUser):
     
     @property
     def total_boosts(self):
-        """Retorna o número total de anúncios impulsionados"""
+        """Retorna o total de boosts usados"""
         from ads.models import Anuncio
-        return Anuncio.objects.filter(
-            usuario=self,
-            is_boosted=True
-        ).count()
+        return Anuncio.objects.filter(usuario=self, is_boosted=True).count()
     
     class Meta:
         verbose_name = 'Usuário'
@@ -176,8 +171,8 @@ class CustomUser(AbstractUser):
         indexes = [
             models.Index(fields=['email']),
             models.Index(fields=['user_type']),
-            models.Index(fields=['cidade_ref']),
-            models.Index(fields=['estado_ref']),
+            models.Index(fields=['cidade']),
+            models.Index(fields=['estado']),
             models.Index(fields=['plano']),
             models.Index(fields=['is_vip']),
         ]
@@ -191,7 +186,7 @@ class CustomUser(AbstractUser):
             {'label': 'Foto do Perfil', 'complete': bool(self.foto), 'weight': 20},
             {'label': 'WhatsApp', 'complete': bool(self.whatsapp), 'weight': 20},
             {'label': 'Bio', 'complete': bool(self.bio), 'weight': 20},
-            {'label': 'Localização', 'complete': bool(self.cidade_ref), 'weight': 20},
+            {'label': 'Localização', 'complete': bool(self.cidade), 'weight': 20},
             {'label': 'Nome Completo', 'complete': bool(self.get_full_name()), 'weight': 20}
         ]
         
@@ -301,8 +296,11 @@ class CustomUser(AbstractUser):
         if not self.bio:
             missing.append('Biografia')
             
-        if not self.cidade_ref or not self.estado_ref:
-            missing.append('Localização (Estado/Cidade)')
+        if not self.cidade:
+            missing.append('Localização (Cidade)')
+            
+        if not self.estado:
+            missing.append('Localização (Estado)')
             
         return missing
 
@@ -346,35 +344,40 @@ class CustomUser(AbstractUser):
         }
 
 class AcompanhanteProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     nome_artistico = models.CharField(max_length=100)
-    bio = models.TextField()
-    foto_perfil = models.ImageField(upload_to='perfis/')
+    bio = models.TextField(max_length=500)
+    foto_perfil = models.ImageField(upload_to='acompanhantes/fotos/')
     idade = models.IntegerField()
-    cidade_ref = models.ForeignKey('Cidade', on_delete=models.SET_NULL, null=True, blank=True)
-    estado_ref = models.ForeignKey('Estado', on_delete=models.SET_NULL, null=True, blank=True)
-    reviews_count = models.PositiveIntegerField(default=0)
-    is_premium = models.BooleanField(default=False)
-    
-    @property
-    def cidade(self):
-        return self.cidade_ref.nome if self.cidade_ref else ''
-        
-    @property
-    def estado(self):
-        return self.estado_ref.sigla if self.estado_ref else ''
-    
-    @property
-    def progress_percentage(self):
-        return min((self.reviews_count / 1000) * 100, 100)
-    
-    @property
-    def has_achievement(self):
-        return self.reviews_count >= 1000
-    
+    estado = models.ForeignKey(
+        Estado,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='acompanhantes'
+    )
+    cidade = models.ForeignKey(
+        Cidade,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='acompanhantes'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.nome_artistico
+
     class Meta:
         verbose_name = 'Perfil de Acompanhante'
-        verbose_name_plural = 'Perfis de Acompanhantes' 
+        verbose_name_plural = 'Perfis de Acompanhantes'
+        indexes = [
+            models.Index(fields=['nome_artistico']),
+            models.Index(fields=['idade']),
+            models.Index(fields=['cidade']),
+            models.Index(fields=['estado']),
+        ]
 
 class Review(models.Model):
     RATING_CHOICES = [

@@ -51,50 +51,58 @@ class ProfileUpdateForm(forms.ModelForm):
             'bio',
             'foto_perfil',
             'idade',
-            'cidade_ref',
-            'estado_ref'
+            'estado',
+            'cidade'
         ]
         labels = {
             'nome_artistico': 'Nome Artístico',
             'bio': 'Biografia',
             'foto_perfil': 'Foto do Perfil',
             'idade': 'Idade',
-            'cidade_ref': 'Cidade',
-            'estado_ref': 'Estado'
+            'estado': 'Estado',
+            'cidade': 'Cidade'
         }
-        
+        widgets = {
+            'nome_artistico': forms.TextInput(attrs={'class': 'form-input bg-dark-700 text-white border-dark-600'}),
+            'bio': forms.Textarea(attrs={'class': 'form-textarea bg-dark-700 text-white border-dark-600', 'rows': 4}),
+            'foto_perfil': forms.FileInput(attrs={'class': 'form-input bg-dark-700 text-white border-dark-600'}),
+            'idade': forms.NumberInput(attrs={'class': 'form-input bg-dark-700 text-white border-dark-600'}),
+            'estado': forms.Select(attrs={'class': 'form-select bg-dark-700 text-white border-dark-600'}),
+            'cidade': forms.Select(attrs={'class': 'form-select bg-dark-700 text-white border-dark-600'})
+        }
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['estado_ref'].queryset = Estado.objects.all()
-        self.fields['cidade_ref'].queryset = Cidade.objects.none()
+        self.fields['estado'].queryset = Estado.objects.all()
+        self.fields['cidade'].queryset = Cidade.objects.none()
         
-        if 'estado_ref' in self.data:
+        if 'estado' in self.data:
             try:
-                estado_id = int(self.data.get('estado_ref'))
-                self.fields['cidade_ref'].queryset = Cidade.objects.filter(estado_id=estado_id)
+                estado_id = int(self.data.get('estado'))
+                self.fields['cidade'].queryset = Cidade.objects.filter(estado_id=estado_id)
             except (ValueError, TypeError):
                 pass
-        elif self.instance.pk and self.instance.estado_ref:
-            self.fields['cidade_ref'].queryset = self.instance.estado_ref.cidades.all()
+        elif self.instance.pk and self.instance.estado:
+            self.fields['cidade'].queryset = Cidade.objects.filter(estado=self.instance.estado)
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['foto', 'first_name', 'last_name', 'estado_ref', 'cidade_ref', 'whatsapp', 'bio']
+        fields = ['foto', 'first_name', 'last_name', 'estado', 'cidade', 'whatsapp', 'bio']
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['estado_ref'].queryset = Estado.objects.all()
-        self.fields['cidade_ref'].queryset = Cidade.objects.none()
+        self.fields['estado'].queryset = Estado.objects.all()
+        self.fields['cidade'].queryset = Cidade.objects.none()
         
-        if 'estado_ref' in self.data:
+        if 'estado' in self.data:
             try:
-                estado_id = int(self.data.get('estado_ref'))
-                self.fields['cidade_ref'].queryset = Cidade.objects.filter(estado_id=estado_id)
+                estado_id = int(self.data.get('estado'))
+                self.fields['cidade'].queryset = Cidade.objects.filter(estado_id=estado_id)
             except (ValueError, TypeError):
                 pass
-        elif self.instance.pk and self.instance.estado_ref:
-            self.fields['cidade_ref'].queryset = self.instance.estado_ref.cidades.all()
+        elif self.instance.pk and self.instance.estado:
+            self.fields['cidade'].queryset = Cidade.objects.filter(estado=self.instance.estado)
 
     def clean_whatsapp(self):
         whatsapp = self.cleaned_data.get('whatsapp')
@@ -108,38 +116,34 @@ class UserProfileForm(forms.ModelForm):
         return whatsapp
 
 class ProfileEditForm(forms.ModelForm):
+    estado = forms.ModelChoiceField(
+        queryset=Estado.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select bg-dark-700 text-white border-dark-600'})
+    )
+    
+    cidade = forms.ModelChoiceField(
+        queryset=Cidade.objects.none(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select bg-dark-700 text-white border-dark-600'})
+    )
+    
     class Meta:
         model = CustomUser
-        fields = [
-            'first_name', 
-            'last_name',
-            'foto',
-            'whatsapp',
-            'bio',
-            'estado_ref',
-            'cidade_ref',
-            'instagram'
-        ]
-        labels = {
-            'first_name': 'Nome',
-            'last_name': 'Sobrenome',
-            'foto': 'Foto do Perfil',
-            'whatsapp': 'WhatsApp',
-            'bio': 'Biografia',
-            'estado_ref': 'Estado',
-            'cidade_ref': 'Cidade',
-            'instagram': 'Instagram'
+        fields = ['first_name', 'last_name', 'whatsapp', 'estado', 'cidade', 'bio', 'foto']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-input bg-dark-700 text-white border-dark-600'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-input bg-dark-700 text-white border-dark-600'}),
+            'whatsapp': forms.TextInput(attrs={'class': 'form-input bg-dark-700 text-white border-dark-600'}),
+            'bio': forms.Textarea(attrs={'class': 'form-textarea bg-dark-700 text-white border-dark-600', 'rows': 4}),
+            'foto': forms.FileInput(attrs={'class': 'form-input bg-dark-700 text-white border-dark-600'}),
         }
-        
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['estado_ref'].empty_label = "Selecione um estado"
-        self.fields['cidade_ref'].empty_label = "Selecione uma cidade"
-        self.fields['instagram'].required = False
-        
-        if self.instance.estado_ref:
-            self.fields['cidade_ref'].queryset = self.instance.estado_ref.cidades.all()
-            
+        if self.instance.estado:
+            self.fields['cidade'].queryset = Cidade.objects.filter(estado=self.instance.estado)
+
     def clean_whatsapp(self):
         whatsapp = self.cleaned_data.get('whatsapp')
         if whatsapp:

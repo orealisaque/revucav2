@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'cloudinary',
     'django.contrib.sites',
+    'django_extensions',
 ]
 
 # Configuração base do MIDDLEWARE

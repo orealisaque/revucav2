@@ -154,16 +154,17 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 @method_decorator(csrf_protect, name='dispatch')
 class ProfileEditView(LoginRequiredMixin, UpdateView):
     model = CustomUser
-    template_name = 'users/profile_edit.html'
     form_class = ProfileEditForm
+    template_name = 'users/profile_edit.html'
     success_url = reverse_lazy('users:profile')
     
     def get_object(self, queryset=None):
         return self.request.user
     
     def form_valid(self, form):
+        response = super().form_valid(form)
         messages.success(self.request, 'Perfil atualizado com sucesso!')
-        return super().form_valid(form)
+        return response
 
 class ProfileView(LoginRequiredMixin, DetailView):
     model = CustomUser
