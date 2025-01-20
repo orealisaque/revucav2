@@ -6,8 +6,11 @@
             "use": "@vercel/python"
         },
         {
-            "src": "static/**",
-            "use": "@vercel/static"
+            "src": "build_static.sh",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "static"
+            }
         }
     ],
     "routes": [
