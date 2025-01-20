@@ -9,4 +9,5 @@ urlpatterns = [
     path('profile/edit/', views.ProfileEditView.as_view(), name='profile_edit'),
     path('get_cidades/', views.get_cidades, name='get_cidades'),
     path('logout/', views.custom_logout, name='logout'),
+    path('cidades/<int:estado_id>/', views.get_cidades, name='get_cidades'),
 ] 

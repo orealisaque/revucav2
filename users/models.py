@@ -345,7 +345,7 @@ class CustomUser(AbstractUser):
         }
 
 class AcompanhanteProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField('users.CustomUser', on_delete=models.CASCADE)
     nome_completo = models.CharField(max_length=100)
     foto = models.ImageField(upload_to='fotos/', null=True, blank=True)
     whatsapp = models.CharField(max_length=20, null=True, blank=True)

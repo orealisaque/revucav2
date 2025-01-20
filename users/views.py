@@ -115,19 +115,9 @@ def profile_edit(request):
     }) 
 
 @cache_page(60 * 60 * 24)  # Cache por 24 horas
-def get_cidades(request):
-    estado_id = request.GET.get('estado_id')
-    cache_key = f'cidades_estado_{estado_id}'
-    
-    cidades = cache.get(cache_key)
-    if not cidades:
-        cidades = list(Cidade.objects
-                      .filter(estado_id=estado_id)
-                      .values('id', 'nome')
-                      .order_by('nome'))
-        cache.set(cache_key, cidades, timeout=60 * 60 * 24)
-    
-    return JsonResponse(cidades, safe=False) 
+def get_cidades(request, estado_id):
+    cidades = Cidade.objects.filter(estado_id=estado_id).values('id', 'nome')
+    return JsonResponse(list(cidades), safe=False) 
 
 def custom_logout(request):
     logout(request)
