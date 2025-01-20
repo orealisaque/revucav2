@@ -91,8 +91,8 @@ class CustomUser(AbstractUser):
         blank=True,
         help_text='Máximo de 200 caracteres'
     )
-    cidade = models.ForeignKey(Cidade, on_delete=models.SET_NULL, null=True, blank=True)
-    estado = models.ForeignKey(Estado, on_delete=models.SET_NULL, null=True, blank=True)
+    cidade = models.CharField(max_length=100, blank=True)
+    estado = models.CharField(max_length=2, blank=True)
     
     # Redes sociais
     instagram = models.CharField(
