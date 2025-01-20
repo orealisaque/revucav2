@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .btn {
+        @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+    }
+    .btn-sm {
+        @apply px-3 py-1 text-sm;
+    }
+    .btn-primary {
+        @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-dark-900;
+    }
+    .btn-secondary {
+        @apply bg-dark-700 text-white hover:bg-dark-600 focus:ring-2 focus:ring-dark-500 focus:ring-offset-2 focus:ring-offset-dark-900;
+    }
+    .btn-danger {
+        @apply bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-dark-900;
+    }
+    .form-input, .form-select, .form-textarea {
+        @apply bg-dark-700 border-dark-600 text-white rounded-lg focus:ring-primary-500 focus:border-primary-500;
+    }
+    .form-label {
+        @apply block text-sm font-medium text-gray-300 mb-1;
+    }
+} 

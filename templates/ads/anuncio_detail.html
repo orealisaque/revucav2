@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-dark-800 rounded-xl overflow-hidden shadow-lg">
+        {% if anuncio.get_primeira_foto %}
+        <div class="relative aspect-w-16 aspect-h-9">
+            <img src="{{ anuncio.get_primeira_foto.imagem.url }}" 
+                 class="w-full h-96 object-cover" 
+                 alt="{{ anuncio.titulo }}">
+        </div>
+        {% endif %}
+        
+        <div class="p-6">
+            <h1 class="text-3xl font-bold text-white mb-4">{{ anuncio.titulo }}</h1>
+            
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center">
+                    <span class="text-primary-500 text-2xl font-bold">
+                        R$ {{ anuncio.preco }}
+                    </span>
+                </div>
+                <div class="text-gray-400">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    {{ anuncio.cidade }}
+                </div>
+            </div>
+            
+            <div class="prose prose-invert max-w-none">
+                {{ anuncio.descricao|linebreaks }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if anuncio.usuario.is_vip %}
+<div class="bg-dark-800 rounded-xl p-6 mt-6">
+    <h3 class="text-lg font-bold mb-4">Métricas do Anúncio</h3>
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <div class="text-sm text-gray-400">Visualizações Totais</div>
+            <div class="text-2xl font-bold">{{ anuncio.views }}</div>
+        </div>
+        {% if anuncio.is_boosted %}
+        <div>
+            <div class="text-sm text-gray-400">Impacto do Boost</div>
+            <div class="text-2xl font-bold text-primary-500">+{{ anuncio.boost_impacto }}%</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if anuncio.usuario == request.user %}
+<div class="mt-6">
+    <button id="boost-button" class="btn-secondary">
+        Impulsionar Anúncio
+    </button>
+</div>
+
+<script>
+const boostButton = document.getElementById('boost-button');
+
+boostButton.addEventListener('click', function() {
+    fetch(`/billing/boost/{{ anuncio.id }}/`)
+    .then(response => response.json())
+    .then(session => {
+        return stripe.redirectToCheckout({ sessionId: session.sessionId });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>
+{% endif %}
+{% endblock %} 

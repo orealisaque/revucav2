@@ -1,0 +1,44 @@
+<div class="image-preview-upload">
+    {% if widget.is_initial %}
+    <div class="flex items-center space-x-4">
+        <img src="{{ widget.value.url }}" class="w-16 h-16 object-cover rounded">
+        <div>
+            {{ widget.clear_checkbox_label }}: {{ widget.clear_checkbox_id }}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="flex items-center justify-center">
+        <label class="upload-label">
+            <i class="fas fa-cloud-upload-alt text-3xl mb-2"></i>
+            <span class="text-base">Selecionar fotos</span>
+            <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+        </label>
+    </div>
+
+    <div id="preview-{{ widget.name }}" class="preview-grid">
+        <!-- Preview das imagens será inserido aqui via JS -->
+    </div>
+
+    <script>
+    document.querySelector('input[name="{{ widget.name }}"]').addEventListener('change', function(e) {
+        const container = document.getElementById('preview-{{ widget.name }}');
+        container.innerHTML = '';
+        
+        Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                container.innerHTML += `
+                    <div class="preview-item">
+                        <img src="${e.target.result}" class="preview-image">
+                        <div class="preview-overlay">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                `;
+            }
+            reader.readAsDataURL(file);
+        });
+    });
+    </script>
+</div> 

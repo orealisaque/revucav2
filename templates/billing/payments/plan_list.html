@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Planos - Revuca{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-center mb-12">Escolha seu Plano</h1>
+
+    <div class="grid md:grid-cols-3 gap-8">
+        {% for plan in plans %}
+            <div class="bg-gray-800 rounded-lg p-6 flex flex-col">
+                <h2 class="text-2xl font-bold mb-4">{{ plan.name }}</h2>
+                <div class="text-3xl font-bold text-purple-500 mb-4">
+                    R$ {{ plan.price }}/{{ plan.get_interval_display }}
+                </div>
+                
+                <ul class="mb-8 flex-grow">
+                    {% for feature in plan.features.items %}
+                        <li class="flex items-center mb-2">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                            </svg>
+                            {{ feature }}
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <a href="{% url 'payments:checkout' plan.pk %}" 
+                   class="btn-primary text-center">
+                    Assinar Agora
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

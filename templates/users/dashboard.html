@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+{% load static %}
+{% load currency_filters %}
+{% load user_filters %}
+
+{% block extra_head %}
+{% if not debug %}
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 space-y-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Perfil e Progresso -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Card do Perfil -->
+            <div class="bg-dark-800 rounded-xl p-6 shadow-lg">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        {% if user.foto %}
+                            <img src="{{ user.foto.url }}" alt="{{ user.get_full_name }}" 
+                                 class="w-24 h-24 rounded-full object-cover"
+                                 loading="lazy">
+                        {% else %}
+                            <div class="w-24 h-24 rounded-full bg-dark-700 flex items-center justify-center">
+                                <i class="fas fa-user text-4xl text-gray-500"></i>
+                            </div>
+                        {% endif %}
+                        <div class="absolute -bottom-2 -right-2">
+                            {% if user.is_verified %}
+                                <span class="bg-primary-500 text-white p-1 rounded-full">
+                                    <i class="fas fa-check-circle"></i>
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="flex-grow">
+                        <h1 class="text-2xl font-bold mb-2">{{ user.get_full_name }}</h1>
+                        
+                        <!-- Status do Plano -->
+                        <div class="mb-3">
+                            {% if user.is_vip %}
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                    VIP até {{ user.plano_expira_em|date:"d/m/Y" }}
+                                </span>
+                            {% else %}
+                                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Plano Básico</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Biografia -->
+                        <div class="mb-4 text-gray-600 text-sm">
+                            {% if user.bio %}
+                                <p class="italic">{{ user.bio }}</p>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-gray-400">{{ user.email }}</p>
+                        <div class="mt-2 flex space-x-2">
+                            <a href="{% url 'users:profile_edit' %}" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-edit"></i>
+                                Editar Perfil
+                            </a>
+                            <a href="{% url 'account_logout' %}" class="btn btn-sm btn-danger">
+                                <i class="fas fa-sign-out-alt mr-1"></i> Sair
+                            </a>
+                        </div>
+
+                        <!-- No perfil do usuário -->
+                        <div class="text-gray-400 text-sm mt-2">
+                            {% if user.cidade_ref %}
+                                <i class="fas fa-map-marker-alt mr-1"></i>
+                                {{ user.cidade_ref.nome }} - {{ user.cidade_ref.estado.sigla }}
+                            {% elif user.cidade %}
+                                <i class="fas fa-map-marker-alt mr-1"></i>
+                                {{ user.cidade }} - {{ user.estado }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progresso do Perfil -->
+            <div class="bg-dark-800 rounded-xl p-6 shadow-lg">
+                <h3 class="text-lg font-bold mb-4">Progresso do Perfil</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Progresso Total</span>
+                            <span class="font-bold">{{ total_progress|floatformat:0 }}%</span>
+                        </div>
+                        <div class="relative h-3 bg-dark-700 rounded-full overflow-hidden">
+                            <div class="absolute top-0 left-0 h-full bg-green-500 transition-all duration-500 ease-out"
+                                 style="width: {{ total_progress|floatformat:0 }}%">
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent 
+                                            animate-shimmer" style="--shimmer-speed: 2s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de etapas -->
+                    <div class="mt-6 space-y-3">
+                        {% for item in profile_progress %}
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center 
+                                      {% if item.complete %}bg-primary-500/20 text-primary-400
+                                      {% else %}bg-dark-700 text-gray-500{% endif %}">
+                                <i class="{{ item.icon|default:'fas fa-check' }} text-sm"></i>
+                            </div>
+                            <div class="ml-3 flex-grow">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm {% if item.complete %}text-white{% else %}text-gray-400{% endif %}">
+                                        {{ item.label }}
+                                    </span>
+                                    {% if item.complete %}
+                                    <span class="text-xs text-primary-400">Concluído</span>
+                                    {% else %}
+                                    <a href="{{ item.url }}" class="text-xs text-primary-500 hover:text-primary-400">
+                                        Completar
+                                    </a>
+                                    {% endif %}
+                                </div>
+                                <div class="mt-1 h-1.5 bg-dark-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-primary-500 transition-all duration-300"
+                                         style="width: {% if item.complete %}100{% else %}0{% endif %}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Conquistas -->
+            <div class="bg-dark-800 rounded-xl p-6 shadow-lg">
+                <h3 class="text-xl font-bold mb-4">Suas Conquistas</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {% for badge in user.badges.all %}
+                    <div class="bg-dark-700 rounded-lg p-4 text-center">
+                        <div class="text-4xl mb-2 {{ badge.icon_color }}">
+                            <i class="fas {{ badge.icon }}"></i>
+                        </div>
+                        <h4 class="font-bold">{{ badge.name }}</h4>
+                        <p class="text-sm text-gray-400">{{ badge.description }}</p>
+                    </div>
+                    {% empty %}
+                    <div class="col-span-3 text-center py-8">
+                        <div class="text-4xl mb-4 text-gray-500">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <p class="text-gray-400">Continue usando a plataforma para desbloquear conquistas!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Anúncios -->
+        <div class="lg:col-span-2">
+            <div class="bg-dark-800 rounded-xl p-6 shadow-lg">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold">Meus Anúncios</h3>
+                    <a href="{% url 'ads:anuncio_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus mr-2"></i>
+                        Novo Anúncio
+                    </a>
+                </div>
+                
+                <!-- Estatísticas de Anúncios -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-dark-700 rounded-lg p-4 hover:bg-dark-600 transition-colors">
+                        <div class="text-sm text-gray-400">Total de Anúncios</div>
+                        <div class="text-2xl font-bold">{{ anuncios_stats.total }}</div>
+                    </div>
+                    <div class="bg-dark-700 rounded-lg p-4 hover:bg-dark-600 transition-colors">
+                        <div class="text-sm text-primary-400">Visualizações Totais</div>
+                        <div class="text-2xl font-bold">{{ total_views }}</div>
+                    </div>
+                    <div class="bg-dark-700 rounded-lg p-4 hover:bg-dark-600 transition-colors">
+                        <div class="text-sm text-yellow-400">Aprovados</div>
+                        <div class="text-2xl font-bold">{{ anuncios_stats.aprovado }}</div>
+                    </div>
+                    <div class="bg-dark-700 rounded-lg p-4 hover:bg-dark-600 transition-colors">
+                        <div class="text-sm text-purple-400">Impulsionados</div>
+                        <div class="text-2xl font-bold">{{ user.total_boosts }}</div>
+                    </div>
+                </div>
+
+                <!-- Alerta de perfil incompleto -->
+                {% if not profile_complete %}
+                <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-6">
+                    <div class="flex items-center text-yellow-500 mb-4">
+                        <i class="fas fa-exclamation-triangle text-2xl mr-3"></i>
+                        <h3 class="text-lg font-medium">Perfil Incompleto</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        {{ user.get_profile_completion_message.message }}
+                    </p>
+                    {% if user.get_missing_fields %}
+                    <ul class="list-disc list-inside text-gray-400 mb-4 space-y-1">
+                        {% for field in user.get_missing_fields %}
+                        <li>{{ field }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <div class="mt-4">
+                        <a href="{% url 'users:profile_edit' %}" 
+                           class="text-sm font-medium text-yellow-500 hover:text-yellow-400">
+                            Completar perfil <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Informações do Plano -->
+                <div class="bg-dark-800 rounded-xl p-6 shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold flex items-center">
+                                <span>Plano {{ plano_info.nome }}</span>
+                                {% if plano_info.tipo == 'premium' %}
+                                    <span class="ml-2 px-2 py-1 bg-purple-500/10 text-purple-400 text-xs rounded-full">Premium</span>
+                                {% else %}
+                                    <span class="ml-2 px-2 py-1 bg-gray-500/10 text-gray-400 text-xs rounded-full">Basic</span>
+                                {% endif %}
+                            </h4>
+                            <p class="text-sm text-gray-400 mt-1">
+                                <i class="fas fa-photo-video mr-1"></i>
+                                Limite: {{ plano_info.max_fotos }} fotos e {{ plano_info.max_videos }} vídeos
+                            </p>
+                            <p class="text-sm text-gray-400 mt-1">
+                                <i class="fas fa-ad mr-1"></i>
+                                Limite de anúncios: {{ plano_info.max_anuncios }}
+                            </p>
+                            {% if plano_info.tipo == 'premium' and plano_info.expira_em %}
+                            <p class="text-sm text-gray-400 mt-1">
+                                <i class="fas fa-calendar-alt mr-1"></i>
+                                Expira em: {{ plano_info.expira_em|date:"d/m/Y" }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% if plano_info.tipo != 'premium' %}
+                        <a href="{% url 'billing:upgrade' %}" 
+                           class="btn btn-primary animate-pulse-slow">
+                            <i class="fas fa-crown mr-1"></i>
+                            Fazer Upgrade
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Seus Anúncios -->
+                <div class="bg-dark-800 rounded-xl p-6 shadow-lg mt-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold">Seus Anúncios</h3>
+                        <a href="{% url 'ads:anuncio_create' %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus mr-1"></i>
+                            Novo Anúncio
+                        </a>
+                    </div>
+                    
+                    {% if anuncios_stats.total > 0 %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {% for anuncio in ultimos_anuncios %}
+                        <div class="bg-dark-700 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
+                            <div class="relative aspect-w-16 aspect-h-9">
+                                {% if anuncio.get_primeira_foto %}
+                                <img src="{{ anuncio.get_primeira_foto.imagem.url }}" 
+                                     alt="{{ anuncio.titulo }}"
+                                     class="w-full h-full object-cover">
+                                {% else %}
+                                <div class="w-full h-full bg-dark-600 flex items-center justify-center">
+                                    <i class="fas fa-image text-3xl text-gray-500"></i>
+                                </div>
+                                {% endif %}
+                                <div class="absolute top-2 right-2">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium
+                                               {% if anuncio.status == 'aprovado' %}bg-green-500/20 text-green-400
+                                               {% elif anuncio.status == 'pendente' %}bg-yellow-500/20 text-yellow-400
+                                               {% else %}bg-red-500/20 text-red-400{% endif %}">
+                                        {{ anuncio.get_status_display }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-bold mb-1">{{ anuncio.titulo }}</h4>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-primary-500 font-bold">
+                                        {{ anuncio.get_preco_formatado }}
+                                    </span>
+                                    <div class="flex space-x-2">
+                                        <a href="{% url 'ads:anuncio_update' anuncio.pk %}" 
+                                           class="btn btn-sm btn-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        {% if anuncio.status == 'aprovado' and not anuncio.is_boosted %}
+                                        <button onclick="boostAnuncio({{ anuncio.id }})"
+                                                class="btn btn-sm btn-primary">
+                                            <i class="fas fa-rocket"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8">
+                        <div class="text-4xl mb-4 text-gray-500">
+                            <i class="fas fa-ad"></i>
+                        </div>
+                        <p class="text-gray-400">Você ainda não tem anúncios</p>
+                        <a href="{% url 'ads:anuncio_create' %}" class="btn btn-primary mt-4">
+                            Criar Anúncio
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seções com margens -->
+    <div class="space-y-8">
+        <!-- ... seções ... -->
+    </div>
+</div>
+
+<div id="anuncioModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="container mx-auto px-4 h-full flex items-center justify-center">
+        <div class="relative w-full max-w-2xl">
+            <button id="closeModal" class="absolute -top-10 right-0 text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <div id="anuncioModalContent"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function boostAnuncio(anuncioId) {
+    if (!confirm('Deseja promover este anúncio por R$ 19,90 por 7 dias?')) {
+        return;
+    }
+    
+    fetch(`/billing/boost/${anuncioId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(session => {
+        return stripe.redirectToCheckout({ sessionId: session.sessionId });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Erro ao processar pagamento. Por favor, tente novamente.');
+    });
+}
+
+// Configuração do gráfico de visualizações (apenas se existir dados)
+{% if views_chart_data %}
+const ctx = document.getElementById('viewsChart').getContext('2d');
+const viewsChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ views_chart_data.labels|safe }},
+        datasets: [{
+            label: 'Visualizações',
+            data: {{ views_chart_data.data|safe }},
+            borderColor: '#8B5CF6',
+            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.1)'
+                },
+                ticks: {
+                    color: '#9CA3AF'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    color: '#9CA3AF'
+                }
+            }
+        }
+    }
+});
+{% endif %}
+
+{% if subscription_data %}
+// Código de gerenciamento da assinatura...
+document.getElementById('cancelSubscription').addEventListener('click', async (e) => {
+    e.preventDefault();
+    // ... código existente ...
+});
+{% endif %}
+</script>
+{% endblock %} 

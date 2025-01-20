@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Anúncios - Revuca{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4">
+    <!-- Filtros -->
+    <div class="mb-8">
+        <form method="get" class="flex gap-4">
+            <input type="text" name="q" placeholder="Buscar anúncios..." 
+                   class="flex-1 p-2 rounded bg-gray-800 text-white">
+            <select name="categoria" class="p-2 rounded bg-gray-800 text-white">
+                <option value="">Todas as categorias</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.slug }}">{{ categoria.nome }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-primary">Buscar</button>
+        </form>
+    </div>
+
+    <!-- Grid de Anúncios -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for anuncio in anuncios %}
+            <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                {% if anuncio.fotos.first %}
+                    <img src="{{ anuncio.fotos.first.imagem.url }}" 
+                         alt="{{ anuncio.titulo }}" 
+                         class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-4">
+                    <h3 class="text-xl font-bold mb-2">{{ anuncio.titulo }}</h3>
+                    <p class="text-gray-400 mb-2">{{ anuncio.cidade }}/{{ anuncio.estado }}</p>
+                    <p class="text-2xl font-bold text-purple-500">R$ {{ anuncio.preco }}</p>
+                    <a href="{{ anuncio.get_absolute_url }}" 
+                       class="mt-4 block text-center btn-primary">
+                        Ver Detalhes
+                    </a>
+                </div>
+                {% if anuncio.is_boosted %}
+                <div class="absolute top-2 right-2">
+                    <span class="boost-badge">
+                        <i class="fas fa-rocket mr-1"></i>
+                        Em Destaque
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p class="text-center col-span-full">Nenhum anúncio encontrado.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Paginação -->
+    {% if is_paginated %}
+        <div class="mt-8 flex justify-center gap-2">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn-primary">Anterior</a>
+            {% endif %}
+            
+            <span class="px-4 py-2 bg-gray-800 rounded">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn-primary">Próxima</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

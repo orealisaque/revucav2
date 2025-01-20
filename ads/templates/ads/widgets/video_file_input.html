@@ -1,0 +1,37 @@
+<div class="video-preview-upload">
+    {% if widget.is_initial %}
+    <div class="flex items-center space-x-4">
+        <video src="{{ widget.value.url }}" class="w-32 h-32 object-cover rounded" controls></video>
+        <div>
+            {{ widget.clear_checkbox_label }}: {{ widget.clear_checkbox_id }}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="flex items-center justify-center">
+        <label class="upload-label">
+            <i class="fas fa-video text-3xl mb-2"></i>
+            <span class="text-base">Selecionar vídeo</span>
+            <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+        </label>
+    </div>
+
+    <div id="preview-{{ widget.name }}" class="video-preview">
+        <!-- Preview do vídeo será inserido aqui via JS -->
+    </div>
+
+    <script>
+    document.querySelector('input[name="{{ widget.name }}"]').addEventListener('change', function(e) {
+        const container = document.getElementById('preview-{{ widget.name }}');
+        container.innerHTML = '';
+        
+        if (this.files && this.files[0]) {
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(this.files[0]);
+            video.classList.add('w-full', 'h-64', 'object-cover', 'rounded-lg', 'mt-4');
+            video.controls = true;
+            container.appendChild(video);
+        }
+    });
+    </script>
+</div> 

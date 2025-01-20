@@ -1,0 +1,12 @@
+django>=5.0
+psycopg2-binary
+whitenoise
+django-allauth
+django-crispy-forms
+crispy-tailwind
+django-debug-toolbar
+python-dotenv
+requests
+django-cloudinary-storage
+stripe
+# ... outros requisitos específicos do seu projeto 

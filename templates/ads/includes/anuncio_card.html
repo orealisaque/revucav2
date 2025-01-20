@@ -1,0 +1,45 @@
+<div class="relative h-48">
+    {% if anuncio.primeira_foto %}
+        <img src="{{ anuncio.primeira_foto }}" 
+             alt="{{ anuncio.titulo }}" 
+             loading="lazy"
+             class="w-full h-full object-cover"
+             width="300"
+             height="200">
+    {% elif anuncio.videos.all %}
+        <div class="w-full h-full bg-dark-600 relative">
+            <video src="{{ anuncio.videos.first.video.url }}" 
+                   class="w-full h-full object-cover"
+                   poster="{{ anuncio.videos.first.thumbnail.url|default:'' }}"
+                   muted></video>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fas fa-play-circle text-4xl text-white opacity-75"></i>
+            </div>
+        </div>
+    {% else %}
+        <div class="w-full h-full bg-dark-600 flex items-center justify-center">
+            <i class="fas fa-image text-3xl text-gray-500"></i>
+        </div>
+    {% endif %}
+</div>
+<div class="p-4">
+    <div class="flex items-center mb-2">
+        <div class="w-8 h-8 rounded-full overflow-hidden mr-2">
+            {% if anuncio.usuario.foto %}
+                <img src="{{ anuncio.usuario.foto.url }}" class="w-full h-full object-cover">
+            {% else %}
+                <div class="w-full h-full bg-dark-600 flex items-center justify-center">
+                    <i class="fas fa-user text-gray-500"></i>
+                </div>
+            {% endif %}
+        </div>
+        <div class="flex-grow">
+            <h3 class="font-bold text-lg line-clamp-1">{{ anuncio.titulo }}</h3>
+            <p class="text-gray-400 text-sm">{{ anuncio.cidade }}</p>
+        </div>
+    </div>
+    <div class="flex justify-between items-center mt-2">
+        <span class="text-primary-500 font-bold">R$ {{ anuncio.preco|floatformat:2 }}</span>
+        <span class="text-xs text-gray-400">{{ anuncio.created_at|date:"d/m/Y" }}</span>
+    </div>
+</div> 

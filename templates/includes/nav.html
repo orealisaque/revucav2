@@ -1,0 +1,20 @@
+{% if user.is_authenticated %}
+    <div class="relative group">
+        <button class="flex items-center space-x-1">
+            <img src="{{ user.foto.url }}" alt="{{ user.get_full_name }}" 
+                 class="w-8 h-8 rounded-full object-cover">
+            <span>{{ user.get_full_name }}</span>
+        </button>
+        <div class="absolute right-0 mt-2 w-48 bg-dark-800 rounded-lg shadow-xl hidden group-hover:block">
+            <a href="{% url 'users:dashboard' %}" class="block px-4 py-2 hover:bg-dark-700">
+                Dashboard
+            </a>
+            <a href="{% url 'users:profile_edit' %}" class="block px-4 py-2 hover:bg-dark-700">
+                Editar Perfil
+            </a>
+            <a href="{% url 'account_logout' %}" class="block px-4 py-2 hover:bg-dark-700">
+                Sair
+            </a>
+        </div>
+    </div>
+{% endif %} 

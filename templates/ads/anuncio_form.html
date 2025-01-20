@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-dark-800 rounded-xl p-6 shadow-lg">
+            <h2 class="text-2xl font-bold mb-6">{{ form.instance.pk|yesno:"Editar,Novo" }} Anúncio</h2>
+            
+            <div class="bg-dark-800 p-6 rounded-lg mb-6">
+                <h3 class="text-lg font-bold mb-4">Limites do seu plano:</h3>
+                
+                {% if user.is_vip %}
+                <div class="space-y-2 text-sm text-gray-300">
+                    <p><i class="fas fa-check text-green-500 mr-2"></i>Até 2 anúncios ativos</p>
+                    <p><i class="fas fa-check text-green-500 mr-2"></i>Até 10 fotos por anúncio</p>
+                    <p><i class="fas fa-check text-green-500 mr-2"></i>Até 4 vídeos por anúncio</p>
+                    <p><i class="fas fa-check text-green-500 mr-2"></i>Textos personalizados</p>
+                </div>
+                {% else %}
+                <div class="space-y-2 text-sm text-gray-300">
+                    <p><i class="fas fa-check text-green-500 mr-2"></i>1 anúncio ativo</p>
+                    <p><i class="fas fa-check text-green-500 mr-2"></i>Até 5 fotos por anúncio</p>
+                    <p><i class="fas fa-check text-green-500 mr-2"></i>1 vídeo por anúncio</p>
+                    <p><i class="fas fa-times text-red-500 mr-2"></i>Textos personalizados (apenas VIP)</p>
+                </div>
+                
+                <div class="mt-4 p-4 bg-purple-500/10 rounded-lg">
+                    <p class="text-purple-400">
+                        <i class="fas fa-crown mr-2"></i>
+                        Faça upgrade para o plano VIP e tenha mais benefícios!
+                    </p>
+                    <a href="{% url 'billing:upgrade' %}" class="btn btn-primary mt-2">
+                        Fazer Upgrade
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" class="space-y-6" novalidate>
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+                
+                <div class="space-y-6">
+                    {{ form.titulo|as_crispy_field }}
+                    {{ form.categoria|as_crispy_field }}
+                    {{ form.descricao|as_crispy_field }}
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {{ form.preco|as_crispy_field }}
+                        {{ form.cidade|as_crispy_field }}
+                    </div>
+                    
+                    <div class="space-y-6">
+                        {{ form.fotos|as_crispy_field }}
+                        {{ form.video|as_crispy_field }}
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="text-lg font-medium mb-2">Fotos Selecionadas</h4>
+                    <div id="fotosPreview" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Preview das fotos será inserido aqui via JavaScript -->
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h4 class="text-lg font-medium mb-2">Vídeos Selecionados</h4>
+                    <div id="videosPreview" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Preview dos vídeos será inserido aqui via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-4 pt-6">
+                    <a href="{% url 'users:dashboard' %}" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fotosInput = document.querySelector('input[name="fotos"]');
+    const videosInput = document.querySelector('input[name="videos"]');
+    const fotosPreview = document.getElementById('fotosPreview');
+    const videosPreview = document.getElementById('videosPreview');
+
+    fotosInput.addEventListener('change', function(e) {
+        fotosPreview.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const div = document.createElement('div');
+                div.className = 'relative aspect-square rounded-lg overflow-hidden bg-dark-700';
+                div.innerHTML = `
+                    <img src="${e.target.result}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-white text-sm">${file.name}</span>
+                    </div>
+                `;
+                fotosPreview.appendChild(div);
+            }
+            reader.readAsDataURL(file);
+        });
+    });
+
+    videosInput.addEventListener('change', function(e) {
+        videosPreview.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const div = document.createElement('div');
+            div.className = 'relative aspect-square rounded-lg overflow-hidden bg-dark-700 flex items-center justify-center';
+            div.innerHTML = `
+                <i class="fas fa-video text-3xl text-gray-400"></i>
+                <div class="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="text-white text-sm">${file.name}</span>
+                </div>
+            `;
+            videosPreview.appendChild(div);
+        });
+    });
+});
+</script>
+{% endblock %} 

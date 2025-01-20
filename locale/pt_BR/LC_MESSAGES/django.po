@@ -1,0 +1,8 @@
+msgid "This field is required."
+msgstr "Este campo é obrigatório"
+
+msgid "You must type the same password each time."
+msgstr "As senhas não coincidem"
+
+msgid "A user is already registered with this e-mail address."
+msgstr "Este email já está cadastrado" 

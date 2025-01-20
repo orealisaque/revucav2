@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: revuca
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: >
+      python manage.py migrate &&
+      python manage.py populate_estados_cidades &&
+      python manage.py collectstatic --noinput &&
+      gunicorn config.wsgi:application
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:rpKhxn15PdIW@ep-bitter-bread-a4asj9r9.us-east-1.aws.neon.tech/revuca_fresh?sslmode=require
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: CLOUDINARY_CLOUD_NAME
+        value: "dzbn3kfgt"
+      - key: CLOUDINARY_API_KEY
+        value: "394579285526759"
+      - key: CLOUDINARY_API_SECRET
+        value: "MR49DNZv-yfIX3Poe47plc698hA"
+      - key: CLOUDINARY_URL
+        value: "cloudinary://394579285526759:MR49DNZv-yfIX3Poe47plc698hA@dzbn3kfgt"
+      - key: STRIPE_PUBLIC_KEY
+        value: ""
+      - key: STRIPE_SECRET_KEY
+        value: ""
+      - key: STRIPE_WEBHOOK_SECRET
+        value: ""
+      - key: WEB_CONCURRENCY
+        value: 4
+    healthCheckPath: /health/ 
+    postDeploy:
+      - python manage.py migrate
+      - python manage.py populate_estados_cidades 

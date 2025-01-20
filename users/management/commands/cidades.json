@@ -1,0 +1,22 @@
+[
+    {"nome": "São Paulo", "estado": "SP"},
+    {"nome": "Rio de Janeiro", "estado": "RJ"},
+    {"nome": "Belo Horizonte", "estado": "MG"},
+    {"nome": "Salvador", "estado": "BA"},
+    {"nome": "Fortaleza", "estado": "CE"},
+    {"nome": "Recife", "estado": "PE"},
+    {"nome": "Porto Alegre", "estado": "RS"},
+    {"nome": "Curitiba", "estado": "PR"},
+    {"nome": "Manaus", "estado": "AM"},
+    {"nome": "Brasília", "estado": "DF"},
+    {"nome": "Campinas", "estado": "SP"},
+    {"nome": "Santos", "estado": "SP"},
+    {"nome": "Niterói", "estado": "RJ"},
+    {"nome": "Juiz de Fora", "estado": "MG"},
+    {"nome": "Feira de Santana", "estado": "BA"},
+    {"nome": "Sobral", "estado": "CE"},
+    {"nome": "Olinda", "estado": "PE"},
+    {"nome": "Caxias do Sul", "estado": "RS"},
+    {"nome": "Londrina", "estado": "PR"},
+    {"nome": "Parintins", "estado": "AM"}
+] 

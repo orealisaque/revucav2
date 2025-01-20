@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="bg-dark-900 py-16">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold mb-4">Escolha seu Plano</h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                Impulsione seus anúncios e aumente suas chances de sucesso
+            </p>
+        </div>
+
+        <!-- Planos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <!-- Plano Gratuito -->
+            <div class="bg-dark-800 rounded-2xl p-8 border-2 border-dark-700 transform hover:scale-105 transition-all duration-300">
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold mb-2">Gratuito</h3>
+                    <div class="text-4xl font-bold mb-4">
+                        <span class="text-gray-400 text-lg">R$</span>
+                        0
+                        <span class="text-gray-400 text-lg">/mês</span>
+                    </div>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        Até 3 anúncios ativos
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        1 foto por anúncio
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        Suporte por email
+                    </li>
+                    <li class="flex items-center text-gray-500">
+                        <i class="fas fa-times text-red-500 mr-2"></i>
+                        Sem destaque nos resultados
+                    </li>
+                    <li class="flex items-center text-gray-500">
+                        <i class="fas fa-times text-red-500 mr-2"></i>
+                        Sem estatísticas avançadas
+                    </li>
+                </ul>
+                <button class="w-full btn btn-secondary">
+                    Plano Atual
+                </button>
+            </div>
+
+            <!-- Plano VIP -->
+            <div class="bg-dark-800 rounded-2xl p-8 border-2 border-primary-500 transform hover:scale-105 transition-all duration-300 relative">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span class="bg-primary-500 text-white px-4 py-1 rounded-full text-sm">Recomendado</span>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold mb-2">VIP</h3>
+                    <div class="text-4xl font-bold mb-4">
+                        <span class="text-gray-400 text-lg">R$</span>
+                        29,90
+                        <span class="text-gray-400 text-lg">/mês</span>
+                    </div>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        <strong>Anúncios ilimitados</strong>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        <strong>Até 10 fotos por anúncio</strong>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        <strong>Destaque nos resultados de busca</strong>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        <strong>Estatísticas detalhadas</strong>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        <strong>Suporte prioritário 24/7</strong>
+                    </li>
+                </ul>
+                <button class="w-full btn btn-primary">
+                    Começar Agora
+                </button>
+            </div>
+        </div>
+
+        <!-- Garantias -->
+        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="text-center">
+                <div class="text-4xl mb-4 text-primary-500">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-2">Garantia de 7 dias</h4>
+                <p class="text-gray-400">Não gostou? Devolvemos seu dinheiro</p>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl mb-4 text-primary-500">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-2">Pagamento Seguro</h4>
+                <p class="text-gray-400">Seus dados estão protegidos</p>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl mb-4 text-primary-500">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-2">Suporte 24/7</h4>
+                <p class="text-gray-400">Estamos sempre aqui para ajudar</p>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="mt-16 max-w-4xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-8">Perguntas Frequentes</h2>
+            <div class="space-y-4">
+                <div class="bg-dark-800 rounded-lg p-6">
+                    <h3 class="font-bold mb-2">Como funciona o período de teste?</h3>
+                    <p class="text-gray-400">Você tem 7 dias para testar todos os recursos VIP. Se não gostar, devolvemos seu dinheiro sem questionamentos.</p>
+                </div>
+                <div class="bg-dark-800 rounded-lg p-6">
+                    <h3 class="font-bold mb-2">Posso cancelar a qualquer momento?</h3>
+                    <p class="text-gray-400">Sim! Não há fidelidade. Você pode cancelar sua assinatura quando quiser, sem multa.</p>
+                </div>
+                <div class="bg-dark-800 rounded-lg p-6">
+                    <h3 class="font-bold mb-2">Quais formas de pagamento são aceitas?</h3>
+                    <p class="text-gray-400">Aceitamos cartões de crédito de todas as bandeiras e PIX.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

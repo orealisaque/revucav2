@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full bg-dark-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Revuca{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <link href="{% static 'css/tailwind.min.css' %}" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- AOS -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Stripe -->
+    {% if user.is_authenticated and not stripe_loaded %}
+        <script src="https://js.stripe.com/v3/"></script>
+        {% if request.stripe_public_key %}
+        <script>
+            const stripe = Stripe('{{ request.stripe_public_key }}');
+        </script>
+        {% endif %}
+        {% with stripe_loaded=True %}{% endwith %}
+    {% endif %}
+    
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon/favicon-16x16.png' %}">
+    <link rel="shortcut icon" href="{% static 'img/favicon/favicon.ico' %}" type="image/x-icon">
+    
+    {% if not debug %}
+        <!-- Força HTTPS apenas em produção -->
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    {% endif %}
+    
+    <!-- Preconnect para recursos externos -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="h-full bg-dark-900 text-gray-100">
+    <!-- Header -->
+    <header class="bg-dark-900 border-b border-dark-800">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'core:home' %}" class="text-2xl font-bold text-primary-500 hover:text-primary-400 transition">
+                    Revuca
+                </a>
+                
+                <div class="flex items-center space-x-6">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'ads:anuncio_create' %}" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition">
+                            <i class="fas fa-plus mr-2"></i>Criar Anúncio
+                        </a>
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-300 hover:text-white transition">
+                                <i class="fas fa-user-circle text-2xl"></i>
+                                <span>{{ user.email }}</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-dark-800 border border-dark-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <a href="{% url 'users:dashboard' %}" class="block px-4 py-2 text-gray-300 hover:bg-dark-700 hover:text-white rounded-t-lg">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                </a>
+                                <a href="{% url 'users:profile_edit' %}" class="block px-4 py-2 text-gray-300 hover:bg-dark-700 hover:text-white">
+                                    <i class="fas fa-user-edit mr-2"></i>Editar Perfil
+                                </a>
+                                <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-gray-300 hover:bg-dark-700 hover:text-white rounded-b-lg">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="text-gray-300 hover:text-white transition">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Entrar
+                        </a>
+                        <a href="{% url 'account_signup' %}" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition">
+                            Criar Conta
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-900 border-t border-dark-800 py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-primary-500 mb-4">Sobre</h3>
+                    <p class="text-gray-400">Revuca - Sua plataforma de anúncios</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-primary-500 mb-4">Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Termos de Uso</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Política de Privacidade</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-primary-500 mb-4">Contato</h3>
+                    <p class="text-gray-400">contato@revuca.com</p>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-dark-800 text-center text-gray-500">
+                <p>&copy; {% now "Y" %} Revuca. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Initialize AOS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                once: true
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

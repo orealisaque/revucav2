@@ -1,0 +1,51 @@
+<div class="bg-dark-800 rounded-xl overflow-hidden shadow-lg card-hover relative" 
+     data-aos="fade-up" 
+     data-aos-delay="50">
+    <!-- Botões de ação -->
+    <div class="card-actions">
+        {% if user.is_authenticated %}
+            <button onclick="openModal({{ anuncio|json_script:'anuncio-'|add:anuncio.id }})" 
+                    class="maximize-btn">
+                <i class="fas fa-expand"></i>
+            </button>
+        {% endif %}
+    </div>
+    
+    <!-- Imagem -->
+    <div class="relative h-48">
+        {% if anuncio.primeira_foto %}
+            <img src="{{ anuncio.primeira_foto }}" 
+                 alt="{{ anuncio.titulo }}" 
+                 class="w-full h-full object-cover">
+        {% else %}
+            <div class="w-full h-full bg-dark-700 flex items-center justify-center">
+                <i class="fas fa-image text-4xl text-gray-500"></i>
+            </div>
+        {% endif %}
+        
+        {% if anuncio.preco %}
+            <div class="absolute bottom-2 right-2 bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                R$ {{ anuncio.preco }}
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Conteúdo -->
+    <div class="p-4">
+        <h3 class="text-lg font-semibold mb-2 text-white">{{ anuncio.titulo }}</h3>
+        <p class="text-gray-400 text-sm mb-4">{{ anuncio.descricao|truncatechars:100 }}</p>
+        
+        <div class="flex items-center justify-between text-sm text-gray-400">
+            <div class="flex items-center">
+                <i class="fas fa-map-marker-alt mr-1"></i>
+                {{ anuncio.cidade }}
+            </div>
+            {% if anuncio.distancia %}
+                <div class="flex items-center">
+                    <i class="fas fa-route mr-1"></i>
+                    {{ anuncio.distancia }} km
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block extra_head %}
+<style>
+.preview-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.preview-container:hover .preview-overlay {
+    opacity: 1;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-dark-900 to-dark-800 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Grid Principal -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Coluna da Esquerda: Perfil -->
+            <div class="lg:col-span-1">
+                <div class="bg-dark-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/10">
+                    <!-- Foto e Nome -->
+                    <div class="text-center mb-6">
+                        <div class="relative inline-block">
+                            {% if profile_user.foto %}
+                                <img src="{{ profile_user.foto.url }}" 
+                                     alt="{{ profile_user.get_full_name }}" 
+                                     class="w-32 h-32 rounded-full object-cover mx-auto ring-4 ring-primary-500/30">
+                            {% else %}
+                                <div class="w-32 h-32 rounded-full bg-dark-700 mx-auto flex items-center justify-center">
+                                    <i class="fas fa-user text-4xl text-gray-500"></i>
+                                </div>
+                            {% endif %}
+                            
+                            {% if profile_user.is_verified %}
+                            <div class="absolute -bottom-2 -right-2">
+                                <span class="bg-primary-500 text-white p-1 rounded-full">
+                                    <i class="fas fa-check-circle"></i>
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <h1 class="text-2xl font-bold mt-4">{{ profile_user.get_full_name }}</h1>
+                        <p class="text-gray-400">{{ profile_user.email }}</p>
+                    </div>
+                    
+                    <!-- Status do Plano -->
+                    <div class="text-center mb-6">
+                        {% if profile_user.is_vip %}
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                VIP até {{ profile_user.plano_expira_em|date:"d/m/Y" }}
+                            </span>
+                        {% else %}
+                            <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                Plano Básico
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Biografia -->
+                    {% if profile_user.bio %}
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-white mb-2">Sobre</h3>
+                        <p class="text-gray-400">{{ profile_user.bio }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Informações de Contato -->
+                    <div class="space-y-4">
+                        {% if profile_user.whatsapp %}
+                        <div class="flex items-center">
+                            <i class="fab fa-whatsapp text-green-500 w-6"></i>
+                            <span class="text-gray-300">{{ profile_user.whatsapp }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if profile_user.instagram %}
+                        <div class="flex items-center">
+                            <i class="fab fa-instagram text-pink-500 w-6"></i>
+                            <a href="https://instagram.com/{{ profile_user.instagram }}" 
+                               class="text-gray-300 hover:text-primary-400 transition-colors"
+                               target="_blank">
+                                @{{ profile_user.instagram }}
+                            </a>
+                        </div>
+                        {% endif %}
+                        
+                        {% if profile_user.twitter %}
+                        <div class="flex items-center">
+                            <i class="fab fa-twitter text-blue-400 w-6"></i>
+                            <a href="https://twitter.com/{{ profile_user.twitter }}" 
+                               class="text-gray-300 hover:text-primary-400 transition-colors"
+                               target="_blank">
+                                @{{ profile_user.twitter }}
+                            </a>
+                        </div>
+                        {% endif %}
+                        
+                        {% if profile_user.cidade_ref %}
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-red-500 w-6"></i>
+                            <span class="text-gray-300">
+                                {{ profile_user.cidade_ref.nome }}, {{ profile_user.estado_ref.sigla }}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Coluna da Direita: Anúncios -->
+            <div class="lg:col-span-2">
+                <div class="bg-dark-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/10">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">Meus Anúncios</h2>
+                        <a href="{% url 'ads:anuncio_create' %}" 
+                           class="btn btn-primary">
+                            <i class="fas fa-plus mr-2"></i>
+                            Novo Anúncio
+                        </a>
+                    </div>
+                    
+                    {% if anuncios %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% for anuncio in anuncios %}
+                        <div class="bg-dark-700 rounded-xl overflow-hidden hover:ring-2 hover:ring-primary-500/50 transition-all">
+                            <!-- Imagem do Anúncio -->
+                            <div class="aspect-video relative">
+                                {% if anuncio.get_primeira_foto %}
+                                    <img src="{{ anuncio.get_primeira_foto.imagem.url }}" 
+                                         alt="{{ anuncio.titulo }}"
+                                         class="w-full h-full object-cover">
+                                {% else %}
+                                    <div class="w-full h-full bg-dark-600 flex items-center justify-center">
+                                        <i class="fas fa-image text-4xl text-gray-500"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Status Badge -->
+                                <div class="absolute top-2 right-2">
+                                    {% if anuncio.status == 'aprovado' %}
+                                        <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-sm">
+                                            Aprovado
+                                        </span>
+                                    {% elif anuncio.status == 'pendente' %}
+                                        <span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full text-sm">
+                                            Pendente
+                                        </span>
+                                    {% else %}
+                                        <span class="bg-red-500/20 text-red-400 px-2 py-1 rounded-full text-sm">
+                                            Rejeitado
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Conteúdo do Anúncio -->
+                            <div class="p-4">
+                                <h3 class="text-lg font-bold mb-2">{{ anuncio.titulo }}</h3>
+                                <p class="text-gray-400 text-sm line-clamp-2 mb-4">
+                                    {{ anuncio.descricao }}
+                                </p>
+                                
+                                <!-- Estatísticas -->
+                                <div class="flex items-center justify-between text-sm text-gray-400">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-eye mr-1"></i>
+                                        <span>{{ anuncio.views }} visualizações</span>
+                                    </div>
+                                    
+                                    <!-- Ações -->
+                                    <div class="flex space-x-2">
+                                        <a href="{% url 'ads:anuncio_update' anuncio.pk %}" 
+                                           class="text-primary-400 hover:text-primary-300 transition-colors">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        {% if anuncio.status == 'aprovado' and not anuncio.is_boosted %}
+                                        <button onclick="boostAnuncio({{ anuncio.id }})"
+                                                class="text-purple-400 hover:text-purple-300 transition-colors">
+                                            <i class="fas fa-rocket"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4 text-gray-500">
+                            <i class="fas fa-ad"></i>
+                        </div>
+                        <h3 class="text-xl font-medium text-gray-400 mb-4">
+                            Você ainda não tem anúncios
+                        </h3>
+                        <p class="text-gray-500 mb-6">
+                            Comece criando seu primeiro anúncio para alcançar mais clientes
+                        </p>
+                        <a href="{% url 'ads:anuncio_create' %}" 
+                           class="btn btn-primary">
+                            <i class="fas fa-plus mr-2"></i>
+                            Criar Meu Primeiro Anúncio
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Boost -->
+<div id="boostModal" class="fixed inset-0 bg-black/90 hidden z-50">
+    <div class="min-h-screen px-4 flex items-center justify-center">
+        <div class="relative w-full max-w-md bg-dark-800 rounded-xl p-8">
+            <button onclick="closeBoostModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="boostModalContent"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+const stripe = Stripe('{{ stripe_public_key }}');
+
+function boostAnuncio(anuncioId) {
+    if (confirm('Deseja promover este anúncio por R$ 19,90 por 7 dias?')) {
+        fetch(`/ads/${anuncioId}/boost/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.session_id) {
+                stripe.redirectToCheckout({ sessionId: data.session_id });
+            }
+        });
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %} 
