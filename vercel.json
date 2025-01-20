@@ -8,23 +8,17 @@
     ],
     "routes": [
         {
+            "src": "/static/(.*)",
+            "dest": "/static/$1"
+        },
+        {
             "src": "/(.*)",
             "dest": "config/wsgi.py"
         }
     ],
     "env": {
         "DJANGO_SETTINGS_MODULE": "config.settings",
-        "PYTHONPATH": "."
-    },
-    "headers": [
-        {
-            "source": "/(.*)",
-            "headers": [
-                { "key": "X-Frame-Options", "value": "DENY" },
-                { "key": "X-Content-Type-Options", "value": "nosniff" },
-                { "key": "X-XSS-Protection", "value": "1; mode=block" },
-                { "key": "Referrer-Policy", "value": "same-origin" }
-            ]
-        }
-    ]
+        "PYTHONPATH": ".",
+        "DJANGO_ALLOWED_HOSTS": ".vercel.app"
+    }
 } 

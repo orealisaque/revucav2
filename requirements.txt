@@ -12,4 +12,5 @@ stripe
 Pillow
 cloudinary
 PyJWT
+django-extensions
 # ... outros requisitos específicos do seu projeto 

@@ -13,10 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'sua-chave-secreta-padrao')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = False
 
 # Vercel settings
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', 'localhost']
+ALLOWED_HOSTS = ['*', '.vercel.app']
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database configuration
@@ -85,6 +85,12 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django_extensions',
 ]
+
+if DEBUG:
+    INSTALLED_APPS.extend([
+        'debug_toolbar',
+        'django_extensions',
+    ])
 
 # Configuração base do MIDDLEWARE
 MIDDLEWARE = [
@@ -230,7 +236,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 if DEBUG:
-    INSTALLED_APPS.append('debug_toolbar')
     MIDDLEWARE.insert(1, 'debug_toolbar.middleware.DebugToolbarMiddleware')
     
     DEBUG_TOOLBAR_CONFIG = {
