@@ -22,6 +22,9 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import logout
 from .services import IBGEService
 from django.views.decorators.http import require_http_methods
+import logging
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def profile(request):
@@ -34,35 +37,25 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
-        
         try:
-            anuncios = Anuncio.objects.filter(usuario=user)
+            # Usar select_related para evitar N+1 queries
+            user = CustomUser.objects.select_related(
+                'acompanhanteprofile'
+            ).get(id=self.request.user.id)
+            
+            # Usar prefetch_related para relacionamentos many-to-many
+            anuncios = Anuncio.objects.filter(
+                usuario=user
+            ).select_related('cidade', 'estado')
             
             context.update({
                 'user': user,
-                'plano_info': user.plano_atual,
-                'profile_progress': user.get_progress(),
-                'total_progress': user.get_total_progress(),
-                'next_badge': user.get_next_badge(),
-                'anuncios_stats': {
-                    'total': anuncios.count(),
-                    'aprovado': anuncios.filter(status='aprovado').count(),
-                },
-                'total_views': user.get_total_views(),
-                'profile_complete': user.is_profile_complete(),
+                'anuncios_count': anuncios.count(),  # Mais eficiente que len(anuncios)
             })
-            
         except Exception as e:
-            print(f"Erro no dashboard: {str(e)}")
-            context.update({
-                'anuncios_stats': {
-                    'total': 0,
-                    'aprovado': 0,
-                },
-                'total_views': 0,
-            })
-        
+            logger.error(f"Erro no dashboard: {str(e)}")
+            messages.error(self.request, "Erro ao carregar dashboard")
+            context.update({'error': True})
         return context
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -70,12 +63,18 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
     model = AcompanhanteProfile
     form_class = ProfileEditForm
     template_name = 'users/profile_edit.html'
-    success_url = '/users/dashboard/'
-    
+    success_url = reverse_lazy('users:dashboard')
+
     def get_object(self, queryset=None):
-        # Retorna o perfil do usuário atual ou cria um novo
-        profile, created = AcompanhanteProfile.objects.get_or_create(user=self.request.user)
-        return profile
+        try:
+            return AcompanhanteProfile.objects.select_related('user').get(
+                user=self.request.user
+            )
+        except AcompanhanteProfile.DoesNotExist:
+            return AcompanhanteProfile.objects.create(
+                user=self.request.user,
+                nome_completo=self.request.user.get_full_name() or self.request.user.email
+            )
     
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -116,6 +115,10 @@ def profile_edit(request):
 
 @cache_page(60 * 60 * 24)  # Cache por 24 horas
 def get_cidades(request, estado_id):
+    # Usar .exists() primeiro para evitar queries desnecessárias
+    if not Estado.objects.filter(id=estado_id).exists():
+        return JsonResponse({'error': 'Estado não encontrado'}, status=404)
+        
     cidades = Cidade.objects.filter(estado_id=estado_id).values('id', 'nome')
     return JsonResponse(list(cidades), safe=False) 
 
