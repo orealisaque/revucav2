@@ -11,4 +11,5 @@ django-cloudinary-storage
 stripe
 Pillow
 cloudinary
+PyJWT
 # ... outros requisitos específicos do seu projeto 
