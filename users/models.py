@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.files.storage import default_storage
 from io import BytesIO
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 # Use o cloudinary para manipulação de imagens
 import cloudinary
@@ -344,39 +345,24 @@ class CustomUser(AbstractUser):
         }
 
 class AcompanhanteProfile(models.Model):
-    usuario = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    nome_artistico = models.CharField(max_length=100)
-    bio = models.TextField(max_length=500)
-    foto_perfil = models.ImageField(upload_to='acompanhantes/fotos/')
-    idade = models.IntegerField()
-    estado = models.ForeignKey(
-        Estado,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='acompanhantes'
-    )
-    cidade = models.ForeignKey(
-        Cidade,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='acompanhantes'
-    )
+    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
+    whatsapp = models.CharField(max_length=20, blank=True)
+    instagram = models.CharField(max_length=100, blank=True)
+    twitter = models.CharField(max_length=100, blank=True)
+    onlyfans = models.CharField(max_length=100, blank=True)
+    privacy_fans = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.nome_artistico
+        return f"Perfil de {self.usuario.email}"
 
     class Meta:
         verbose_name = 'Perfil de Acompanhante'
         verbose_name_plural = 'Perfis de Acompanhantes'
         indexes = [
-            models.Index(fields=['nome_artistico']),
-            models.Index(fields=['idade']),
-            models.Index(fields=['cidade']),
-            models.Index(fields=['estado']),
+            models.Index(fields=['usuario']),
         ]
 
 class Review(models.Model):

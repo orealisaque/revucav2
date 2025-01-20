@@ -31,8 +31,7 @@ class HomeView(TemplateView):
         anuncios = Anuncio.objects.filter(
             status='aprovado'
         ).select_related(
-            'usuario',
-            'usuario__acompanhanteprofile'
+            'usuario'
         ).prefetch_related(
             'fotos'
         ).order_by('-is_boosted', '-created_at')[:12]
