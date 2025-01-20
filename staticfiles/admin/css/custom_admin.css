@@ -1,0 +1,59 @@
+/* Estilo geral */
+:root {
+    --primary: #dc2626;
+    --secondary: #1f2937;
+}
+
+/* Cabeçalho */
+#header {
+    background: var(--secondary);
+    color: white;
+}
+
+/* Botões de ação */
+.button {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 4px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    background: var(--primary);
+    transition: background 0.3s;
+}
+
+.button:hover {
+    background: #b91c1c;
+    color: white;
+}
+
+/* Status badges */
+.status-pendente {
+    background: #fbbf24;
+    color: black;
+}
+
+.status-aprovado {
+    background: #10b981;
+    color: white;
+}
+
+.status-rejeitado {
+    background: #ef4444;
+    color: white;
+}
+
+/* Formulário de anúncio */
+.inline-group {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.inline-related h3 {
+    background: #f3f4f6;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+} 

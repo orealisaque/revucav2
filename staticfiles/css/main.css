@@ -1,0 +1,817 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .btn {
+        @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+    }
+    .btn-sm {
+        @apply px-3 py-1 text-sm;
+    }
+    .btn-primary {
+        @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-dark-900;
+    }
+    .btn-secondary {
+        @apply bg-dark-700 text-white hover:bg-dark-600 focus:ring-2 focus:ring-dark-500 focus:ring-offset-2 focus:ring-offset-dark-900;
+    }
+    .btn-danger {
+        @apply bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-dark-900;
+    }
+    .form-input, .form-select, .form-textarea {
+        @apply bg-dark-700 border-dark-600 text-white rounded-lg focus:ring-primary-500 focus:border-primary-500;
+    }
+    .form-label {
+        @apply block text-sm font-medium text-gray-300 mb-1;
+    }
+} 
+
+input[type="file"] {
+    @apply sr-only;
+} 
+
+/* Aspect Ratio para vídeo responsivo */
+.aspect-w-16 {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+}
+
+.aspect-w-16 > * {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+/* Estilos do Modal */
+.modal-open {
+    overflow: hidden;
+}
+
+/* Swiper customização */
+.swiper-button-next,
+.swiper-button-prev {
+    color: white !important;
+    background: rgba(0, 0, 0, 0.5);
+    width: 35px !important;
+    height: 35px !important;
+    border-radius: 50%;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    font-size: 18px !important;
+}
+
+.swiper-pagination-bullet {
+    background: white !important;
+    opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+    opacity: 1;
+}
+
+/* Estilos do vídeo hero */
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(17, 24, 39, 0.9),
+        rgba(17, 24, 39, 0.5)
+    );
+}
+
+/* Estilos do vídeo promocional */
+.promo-video {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+}
+
+.video-container video,
+.video-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+} 
+
+/* Animação do gradiente */
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 15s ease infinite;
+}
+
+/* Placeholder shimmer effect */
+.shimmer {
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.03) 0%,
+        rgba(255,255,255,0.08) 50%,
+        rgba(255,255,255,0.03) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+} 
+
+/* Botão WhatsApp */
+.btn-success {
+    @apply bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-dark-900;
+} 
+
+/* Limita número de linhas */
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+} 
+
+/* Estilos do upload de imagens */
+.image-preview-upload {
+    @apply relative space-y-4;
+}
+
+.image-preview-upload .upload-label {
+    @apply w-full flex flex-col items-center px-4 py-6 bg-dark-700 text-white rounded-lg shadow-lg tracking-wide border border-dark-600 cursor-pointer hover:bg-dark-600 transition-colors;
+}
+
+.image-preview-upload input[type="file"] {
+    @apply hidden;
+}
+
+.image-preview-upload .preview-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4;
+}
+
+.image-preview-upload .preview-item {
+    @apply relative aspect-square rounded-lg overflow-hidden;
+}
+
+.image-preview-upload .preview-image {
+    @apply w-full h-full object-cover;
+}
+
+.image-preview-upload .preview-overlay {
+    @apply absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center;
+}
+
+.image-preview-upload .preview-overlay i {
+    @apply text-white text-xl;
+} 
+
+/* Estilos do upload de vídeo */
+.video-preview-upload {
+    @apply relative space-y-4;
+}
+
+.video-preview-upload .upload-label {
+    @apply w-full flex flex-col items-center px-4 py-6 bg-dark-700 text-white rounded-lg shadow-lg tracking-wide border border-dark-600 cursor-pointer hover:bg-dark-600 transition-colors;
+}
+
+.video-preview-upload input[type="file"] {
+    @apply hidden;
+}
+
+.video-preview-upload .video-preview video {
+    @apply w-full rounded-lg shadow-lg;
+} 
+
+/* Estilos do modal */
+.modal-backdrop {
+    @apply fixed inset-0 bg-black bg-opacity-95 backdrop-blur-sm transition-opacity;
+}
+
+.modal-content {
+    @apply bg-dark-800 w-full max-w-4xl rounded-xl overflow-hidden shadow-2xl transform transition-all;
+}
+
+.modal-media {
+    @apply relative aspect-square md:aspect-video;
+}
+
+.modal-info {
+    @apply flex flex-col h-full;
+}
+
+/* Melhorias no Swiper */
+.swiper-pagination-bullet {
+    @apply bg-white bg-opacity-50;
+}
+
+.swiper-pagination-bullet-active {
+    @apply bg-opacity-100;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    @apply bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center transition-colors hover:bg-opacity-75;
+}
+
+/* Botões de ação */
+.action-button {
+    @apply w-full flex items-center justify-center space-x-2 py-3 rounded-lg transition-colors;
+}
+
+.action-button i {
+    @apply text-xl;
+} 
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.95); }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.2s ease-out;
+}
+
+.animate-fadeOut {
+    animation: fadeOut 0.2s ease-out;
+}
+
+/* Estilos para o Swiper */
+.thumb-swiper {
+    height: 80px;
+}
+
+.thumb-swiper .swiper-slide {
+    width: 80px;
+    height: 80px;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+}
+
+.thumb-swiper .swiper-slide-thumb-active {
+    opacity: 1;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: white !important;
+    background: rgba(0, 0, 0, 0.5);
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    font-size: 20px !important;
+} 
+
+/* Adicione ao seu arquivo CSS */
+.progress-bar {
+    width: 0;
+    transition: width 1s ease-in-out;
+}
+
+@keyframes progressFill {
+    from { width: 0; }
+    to { width: var(--progress); }
+}
+
+.progress-bar-animated {
+    animation: progressFill 1s ease-in-out forwards;
+} 
+
+/* Estilos da barra de progresso */
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.animate-shimmer {
+    animation: shimmer var(--shimmer-speed, 2s) infinite;
+}
+
+/* Estilos do Hero Slider */
+.hero-swiper {
+    width: 100%;
+    height: 600px;
+}
+
+.hero-swiper .swiper-slide {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efeito fade entre slides */
+.hero-swiper .swiper-slide {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hero-swiper .swiper-slide-active {
+    opacity: 1;
+}
+
+.hero-swiper .swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    background: white;
+    opacity: 0.5;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+    opacity: 1;
+    background: theme('colors.primary.500');
+}
+
+.hero-swiper .swiper-button-next,
+.hero-swiper .swiper-button-prev {
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.hero-swiper .swiper-button-next:hover,
+.hero-swiper .swiper-button-prev:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.hero-swiper .swiper-button-next:after,
+.hero-swiper .swiper-button-prev:after {
+    font-size: 24px !important;
+} 
+
+.anuncio-card.boosted {
+    border: 2px solid #9333ea;
+    box-shadow: 0 0 15px rgba(147, 51, 234, 0.2);
+}
+
+.boost-badge {
+    background: linear-gradient(45deg, #9333ea, #c026d3);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+} 
+
+/* Estilos do botão de boost */
+.btn-boost {
+    @apply cursor-pointer transform transition-transform duration-200;
+}
+
+.btn-boost:hover {
+    @apply scale-110;
+}
+
+/* Animação do gradiente de fundo */
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.bg-gradient-animate {
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+}
+
+/* Efeito de brilho para anúncios em destaque */
+.border-boost {
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.border-boost:hover {
+    transform: translateY(-2px);
+}
+
+.border-boost::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #9333ea, #c026d3, #9333ea);
+    border-radius: 0.5rem;
+    z-index: -1;
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.bg-gradient-animate {
+    background: linear-gradient(
+        45deg,
+        rgba(147, 51, 234, 0.05),
+        rgba(192, 38, 211, 0.05)
+    );
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+} 
+
+/* Animações adicionais */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+} 
+
+/* Utilitários para limitar linhas de texto */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Aspect ratio para imagens */
+.aspect-w-16 {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+}
+
+.aspect-w-16 > * {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+} 
+
+/* Estilos para a biografia */
+.bio-container {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.bio-text {
+    line-height: 1.6;
+    white-space: pre-line; /* Preserva quebras de linha */
+}
+
+.bio-empty {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Animação suave ao passar o mouse nos links */
+.hover-link {
+    transition: all 0.2s ease-in-out;
+}
+
+.hover-link:hover {
+    transform: translateY(-1px);
+} 
+
+/* Estilos base para formulários modernos */
+.form-modern {
+    @apply bg-gradient-to-br from-dark-900/50 to-dark-800/50 
+           backdrop-blur-lg rounded-2xl p-8 
+           border border-white/10 shadow-xl;
+}
+
+.form-title {
+    @apply text-3xl font-bold bg-clip-text text-transparent 
+           bg-gradient-to-r from-primary-400 to-purple-400 
+           mb-6;
+}
+
+.form-subtitle {
+    @apply text-gray-400 text-sm mb-8;
+}
+
+/* Estilos base para inputs modernos */
+.input-modern {
+    @apply bg-dark-800/50 border border-dark-600/50 text-white 
+           rounded-xl px-4 py-3 w-full
+           backdrop-blur-sm transition-all duration-300
+           placeholder:text-gray-500
+           hover:border-primary-500/30
+           focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20
+           focus:bg-dark-700/50 focus:outline-none;
+}
+
+.input-with-icon {
+    @apply pl-11;
+}
+
+.input-icon {
+    @apply absolute left-4 top-1/2 -translate-y-1/2
+           text-gray-400 transition-all duration-300
+           group-focus-within:text-primary-400;
+}
+
+/* Container do input com efeito de grupo */
+.input-group {
+    @apply relative mb-6 group;
+}
+
+/* Label com animação */
+.input-label {
+    @apply block text-sm font-medium mb-2
+           bg-clip-text text-transparent bg-gradient-to-r 
+           from-gray-200 to-gray-400
+           after:content-[''] after:block after:w-8 after:h-0.5
+           after:bg-gradient-to-r after:from-primary-500/50 after:to-transparent
+           after:transform after:scale-x-0 after:transition-transform
+           after:duration-300 group-focus-within:after:scale-x-100;
+}
+
+/* Select moderno */
+.select-modern {
+    @apply bg-dark-800/50 border border-dark-600/50 text-white 
+           rounded-xl px-4 py-3 w-full appearance-none
+           backdrop-blur-sm transition-all duration-300
+           hover:border-primary-500/30
+           focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20
+           focus:bg-dark-700/50
+           bg-[url("data:image/svg+xml,...")] bg-no-repeat bg-[right_1rem_center]
+           pr-10;
+}
+
+/* Textarea moderno */
+.textarea-modern {
+    @apply bg-dark-800/50 border border-dark-600/50 text-white 
+           rounded-xl px-4 py-3 w-full
+           backdrop-blur-sm transition-all duration-300
+           hover:border-primary-500/30
+           focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20
+           focus:bg-dark-700/50 resize-none
+           min-h-[120px];
+}
+
+/* Animações para inputs */
+.input-modern, .select-modern, .textarea-modern {
+    animation: inputFadeIn 0.5s ease-out;
+}
+
+@keyframes inputFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Efeito de foco */
+.input-group:focus-within .input-label {
+    @apply text-primary-400;
+}
+
+/* Efeito hover nos containers */
+.input-group:hover .input-modern,
+.input-group:hover .select-modern,
+.input-group:hover .textarea-modern {
+    @apply border-primary-500/30 shadow-lg shadow-primary-500/5;
+}
+
+/* Efeito de preenchimento */
+.input-modern:not(:placeholder-shown),
+.select-modern:not(:placeholder-shown),
+.textarea-modern:not(:placeholder-shown) {
+    @apply border-primary-500/30 bg-dark-700/50;
+}
+
+/* Animação do ícone */
+.input-group:focus-within .input-icon {
+    @apply text-primary-400 scale-110;
+    transform: translateY(-50%) translateX(2px);
+}
+
+/* Efeito de erro */
+.input-error {
+    @apply border-red-500/50 focus:border-red-500 focus:ring-red-500/20;
+}
+
+.error-message {
+    @apply text-xs text-red-400 mt-1 ml-1
+           animate-[errorShake_0.6s_ease-in-out];
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+/* Botões modernos com animações */
+.btn-modern {
+    @apply relative overflow-hidden
+           px-6 py-3 rounded-xl font-medium 
+           transition-all duration-300
+           bg-gradient-to-r from-primary-600 to-purple-600
+           hover:from-primary-500 hover:to-purple-500
+           focus:ring-2 focus:ring-primary-500/50 
+           focus:ring-offset-2 focus:ring-offset-dark-900
+           active:scale-95
+           disabled:opacity-50 disabled:cursor-not-allowed
+           disabled:hover:transform-none;
+}
+
+.btn-modern::after {
+    content: '';
+    @apply absolute inset-0 block
+           bg-gradient-to-r from-white/0 via-white/20 to-white/0
+           -translate-x-full skew-x-12;
+    transition: transform 0.6s ease;
+}
+
+.btn-modern:hover::after {
+    transform: translateX(200%) skew-x-12;
+}
+
+/* Animação de carregamento para botões */
+.btn-loading {
+    @apply relative text-transparent;
+}
+
+.btn-loading::before {
+    content: '';
+    @apply absolute inset-0 m-auto w-5 h-5 
+           border-2 border-white/30 border-t-white
+           rounded-full animate-spin;
+}
+
+/* Animações */
+.form-animate-in {
+    animation: formSlideUp 0.5s ease-out;
+}
+
+@keyframes formSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Efeitos de hover e foco */
+.input-modern:focus {
+    @apply shadow-lg shadow-primary-500/20;
+}
+
+/* Checkbox e Radio modernos */
+.checkbox-modern {
+    @apply h-5 w-5 rounded border-dark-600 bg-dark-700/50
+           text-primary-500 focus:ring-primary-500/50
+           focus:ring-offset-dark-900;
+}
+
+.radio-modern {
+    @apply h-5 w-5 border-dark-600 bg-dark-700/50
+           text-primary-500 focus:ring-primary-500/50
+           focus:ring-offset-dark-900;
+}
+
+/* Select moderno */
+.select-modern {
+    @apply bg-dark-700/50 border-dark-600 text-white rounded-xl
+           focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500
+           transition-all duration-300;
+}
+
+/* Textarea moderno */
+.textarea-modern {
+    @apply bg-dark-700/50 border-dark-600 text-white rounded-xl
+           focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500
+           transition-all duration-300 resize-none;
+} 
+
+/* Animação de fade in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Checkbox personalizado */
+input[type="checkbox"] {
+    @apply rounded border-dark-600 bg-dark-700/50
+           text-primary-500 focus:ring-primary-500/50
+           focus:ring-offset-dark-900;
+} 
