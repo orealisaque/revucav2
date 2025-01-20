@@ -31,7 +31,7 @@ def reverse_initial_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_acompanhanteprofile_fields'),
+        ('users', '0002_acompanhanteprofile_complete'),
     ]
 
     operations = [

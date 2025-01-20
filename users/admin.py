@@ -14,21 +14,20 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(AcompanhanteProfile)
 class AcompanhanteProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'nome_completo', 'whatsapp', 'instagram', 'created_at']
-    list_filter = ['created_at', 'updated_at']
-    search_fields = ['user__email', 'nome_completo', 'whatsapp', 'instagram']
-    readonly_fields = ['created_at', 'updated_at']
+    list_display = ['user', 'nome_completo', 'cidade', 'estado']
+    search_fields = ['nome_completo', 'user__email']
+    list_filter = ['estado', 'cidade']
 
 @admin.register(Estado)
 class EstadoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'sigla')
-    search_fields = ('nome', 'sigla')
+    list_display = ['nome', 'sigla']
+    search_fields = ['nome', 'sigla']
 
 @admin.register(Cidade)
 class CidadeAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'estado')
-    list_filter = ('estado',)
-    search_fields = ('nome',)
+    list_display = ['nome', 'estado']
+    search_fields = ['nome']
+    list_filter = ['estado']
 
 @admin.register(Badge)
 class BadgeAdmin(admin.ModelAdmin):
