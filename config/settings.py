@@ -87,10 +87,10 @@ MIDDLEWARE = [
     'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'billing.middleware.StripeContextMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'billing.middleware.StripeContextMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -145,8 +145,13 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_ADAPTER = 'users.adapters.CustomAccountAdapter'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 
+# URLs de redirecionamento
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = 'core:home'
 LOGOUT_REDIRECT_URL = 'account_login'
+
+# Site ID
+SITE_ID = 1
 
 # Configurações de email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Para desenvolvimento
@@ -197,8 +202,6 @@ CLOUDINARY_STORAGE = {
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-SITE_ID = 1
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

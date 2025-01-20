@@ -11,11 +11,11 @@ def health_check(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
+    path('accounts/', include('allauth.urls')),
     path('users/', include('users.urls')),
     path('ads/', include('ads.urls')),
     path('mod/', include('mod.urls')),
     path('billing/', include('billing.urls')),
-    path('accounts/', include('allauth.urls')),
     path('health/', health_check, name='health_check'),
 ]
 
