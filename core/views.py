@@ -29,8 +29,7 @@ class HomeView(TemplateView):
         
         # Busca anúncios ativos e aprovados
         anuncios = Anuncio.objects.filter(
-            Q(status='aprovado') & 
-            Q(expira_em__gt=timezone.now())
+            status='aprovado'
         ).select_related(
             'usuario',
             'usuario__acompanhanteprofile'

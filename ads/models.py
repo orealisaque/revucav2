@@ -74,6 +74,7 @@ class Anuncio(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     boost_expira_em = models.DateTimeField(null=True, blank=True)
     boost_views_antes = models.IntegerField(default=0)
+    expira_em = models.DateTimeField(null=True, blank=True)
     
     @property
     def boost_impacto(self):
