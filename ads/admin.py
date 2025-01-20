@@ -23,16 +23,12 @@ class AnuncioVideoInline(admin.TabularInline):
 
 @admin.register(Anuncio)
 class AnuncioAdmin(admin.ModelAdmin):
-    list_display = ['titulo', 'usuario', 'categoria', 'preco_formatado', 'cidade', 'status', 'created_at', 'acoes']
-    list_filter = ['status', 'categoria', 'cidade']
+    list_display = ['titulo', 'usuario', 'status', 'created_at', 'is_boosted']
+    list_filter = ['status', 'is_boosted', 'created_at']
     search_fields = ['titulo', 'descricao', 'usuario__email']
-    readonly_fields = ['visualizacoes', 'created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at', 'views']
     inlines = [AnuncioFotoInline, AnuncioVideoInline]
     actions = ['aprovar_anuncios', 'rejeitar_anuncios']
-
-    def preco_formatado(self, obj):
-        return f'R$ {obj.preco}/hora'
-    preco_formatado.short_description = 'Preço/Hora'
 
     def acoes(self, obj):
         if obj.status == 'pendente':
@@ -57,7 +53,14 @@ class AnuncioAdmin(admin.ModelAdmin):
             'all': ['admin/css/custom_admin.css']
         }
 
+@admin.register(AnuncioFoto)
+class AnuncioFotoAdmin(admin.ModelAdmin):
+    list_display = ['anuncio', 'is_capa', 'created_at']
+    list_filter = ['is_capa', 'created_at']
+    search_fields = ['anuncio__titulo']
+
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
     list_display = ['nome', 'slug']
+    search_fields = ['nome']
     prepopulated_fields = {'slug': ('nome',)} 

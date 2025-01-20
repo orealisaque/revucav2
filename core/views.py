@@ -27,9 +27,13 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Busca anúncios ativos e aprovados
+        # Busca anúncios ativos, aprovados e não expirados
         anuncios = Anuncio.objects.filter(
-            status='aprovado'
+            status='aprovado',
+            expira_em__isnull=True  # inclui anúncios sem data de expiração
+        ).filter(
+            Q(expira_em__gt=timezone.now()) |  # ou com data futura
+            Q(expira_em__isnull=True)
         ).select_related(
             'usuario'
         ).prefetch_related(
