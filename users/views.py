@@ -74,9 +74,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
     
     def get_object(self, queryset=None):
         # Retorna o perfil do usuário atual ou cria um novo
-        profile, created = AcompanhanteProfile.objects.get_or_create(
-            usuario=self.request.user
-        )
+        profile, created = AcompanhanteProfile.objects.get_or_create(user=self.request.user)
         return profile
     
     def form_valid(self, form):

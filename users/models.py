@@ -345,25 +345,25 @@ class CustomUser(AbstractUser):
         }
 
 class AcompanhanteProfile(models.Model):
-    usuario = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     nome_completo = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to='profiles/', null=True, blank=True)
-    whatsapp = models.CharField(max_length=20)
-    instagram = models.CharField(max_length=50, blank=True)
-    biografia = models.TextField()
-    estado = models.ForeignKey('Estado', on_delete=models.SET_NULL, null=True)
-    cidade = models.ForeignKey('Cidade', on_delete=models.SET_NULL, null=True)
+    foto = models.ImageField(upload_to='fotos/', null=True, blank=True)
+    whatsapp = models.CharField(max_length=20, null=True, blank=True)
+    instagram = models.CharField(max_length=50, null=True, blank=True)
+    biografia = models.TextField(null=True, blank=True)
+    estado = models.ForeignKey(Estado, on_delete=models.SET_NULL, null=True, blank=True)
+    cidade = models.ForeignKey(Cidade, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Perfil de {self.usuario.email}"
+        return f"Perfil de {self.user.email}"
 
     class Meta:
         verbose_name = 'Perfil de Acompanhante'
         verbose_name_plural = 'Perfis de Acompanhantes'
         indexes = [
-            models.Index(fields=['usuario']),
+            models.Index(fields=['user']),
         ]
 
 class Review(models.Model):

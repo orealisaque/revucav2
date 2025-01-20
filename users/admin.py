@@ -14,9 +14,9 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(AcompanhanteProfile)
 class AcompanhanteProfileAdmin(admin.ModelAdmin):
-    list_display = ['usuario', 'whatsapp', 'instagram', 'created_at']
-    list_filter = ['privacy_fans', 'created_at']
-    search_fields = ['usuario__email', 'whatsapp', 'instagram']
+    list_display = ['user', 'nome_completo', 'whatsapp', 'instagram', 'created_at']
+    list_filter = ['created_at', 'updated_at']
+    search_fields = ['user__email', 'nome_completo', 'whatsapp', 'instagram']
     readonly_fields = ['created_at', 'updated_at']
 
 @admin.register(Estado)
