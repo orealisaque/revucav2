@@ -47,32 +47,16 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = AcompanhanteProfile
         fields = [
-            'bio',
+            'nome_completo',
+            'foto',
             'whatsapp',
             'instagram',
-            'twitter',
-            'onlyfans',
-            'privacy_fans'
-        ]
-        widgets = {
-            'bio': forms.Textarea(attrs={'rows': 4}),
-        }
-
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = get_user_model()
-        fields = [
-            'first_name',
-            'last_name',
-            'email',
-            'phone',
-            'foto',
-            'cidade',
+            'biografia',
             'estado',
-            'bio'
+            'cidade'
         ]
         widgets = {
-            'bio': forms.Textarea(attrs={'rows': 4}),
+            'biografia': forms.Textarea(attrs={'rows': 4}),
         }
 
 class ProfileEditForm(forms.ModelForm):

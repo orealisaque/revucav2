@@ -158,19 +158,15 @@ def profile_update(request):
         profile = AcompanhanteProfile.objects.create(usuario=request.user)
 
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, instance=profile)
-        user_form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
         
-        if form.is_valid() and user_form.is_valid():
+        if form.is_valid():
             form.save()
-            user_form.save()
             messages.success(request, 'Perfil atualizado com sucesso!')
-            return redirect('users:profile')
+            return redirect('users:dashboard')
     else:
         form = ProfileUpdateForm(instance=profile)
-        user_form = UserProfileForm(instance=request.user)
     
     return render(request, 'users/profile_update.html', {
-        'form': form,
-        'user_form': user_form
+        'form': form
     }) 
