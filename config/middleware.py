@@ -1,7 +1,7 @@
 import logging
 from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse
-from django.urls import reverse_lazy
 
 logger = logging.getLogger(__name__)
 
@@ -16,4 +16,4 @@ class ErrorHandlingMiddleware:
         except Exception as e:
             logger.error(f"Erro não tratado: {str(e)}")
             messages.error(request, "Ocorreu um erro inesperado")
-            return reverse_lazy('core:home') 
+            return redirect('core:home') 

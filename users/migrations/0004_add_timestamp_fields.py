@@ -1,4 +1,5 @@
 from django.db import migrations
+import django.utils.timezone
 
 class Migration(migrations.Migration):
 
@@ -7,25 +8,22 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # Usar RunPython para operações complexas
-        migrations.RunPython(
-            """
+        migrations.RunSQL(
+            sql="""
             DO $$
             BEGIN
                 BEGIN
                     ALTER TABLE users_acompanhanteprofile 
                     ADD COLUMN created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP;
-                EXCEPTION
-                    WHEN duplicate_column THEN
-                        NULL;
+                EXCEPTION WHEN duplicate_column THEN
+                    NULL;
                 END;
                 
                 BEGIN
                     ALTER TABLE users_acompanhanteprofile 
                     ADD COLUMN updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP;
-                EXCEPTION
-                    WHEN duplicate_column THEN
-                        NULL;
+                EXCEPTION WHEN duplicate_column THEN
+                    NULL;
                 END;
             END $$;
             """,
@@ -34,5 +32,5 @@ class Migration(migrations.Migration):
             DROP COLUMN IF EXISTS created_at,
             DROP COLUMN IF EXISTS updated_at;
             """
-        ),
+        )
     ] 
