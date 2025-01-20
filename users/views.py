@@ -67,13 +67,17 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class ProfileEditView(LoginRequiredMixin, UpdateView):
-    model = CustomUser
+    model = AcompanhanteProfile
     form_class = ProfileEditForm
     template_name = 'users/profile_edit.html'
-    success_url = reverse_lazy('users:profile')
+    success_url = '/users/dashboard/'
     
     def get_object(self, queryset=None):
-        return self.request.user
+        # Retorna o perfil do usuário atual ou cria um novo
+        profile, created = AcompanhanteProfile.objects.get_or_create(
+            usuario=self.request.user
+        )
+        return profile
     
     def form_valid(self, form):
         response = super().form_valid(form)

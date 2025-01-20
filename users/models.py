@@ -345,13 +345,14 @@ class CustomUser(AbstractUser):
         }
 
 class AcompanhanteProfile(models.Model):
-    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    bio = models.TextField(blank=True)
-    whatsapp = models.CharField(max_length=20, blank=True)
-    instagram = models.CharField(max_length=100, blank=True)
-    twitter = models.CharField(max_length=100, blank=True)
-    onlyfans = models.CharField(max_length=100, blank=True)
-    privacy_fans = models.BooleanField(default=False)
+    usuario = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    nome_completo = models.CharField(max_length=100)
+    foto = models.ImageField(upload_to='profiles/', null=True, blank=True)
+    whatsapp = models.CharField(max_length=20)
+    instagram = models.CharField(max_length=50, blank=True)
+    biografia = models.TextField()
+    estado = models.ForeignKey('Estado', on_delete=models.SET_NULL, null=True)
+    cidade = models.ForeignKey('Cidade', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

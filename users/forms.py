@@ -77,31 +77,30 @@ class UserProfileForm(forms.ModelForm):
 
 class ProfileEditForm(forms.ModelForm):
     class Meta:
-        model = get_user_model()
+        model = AcompanhanteProfile
         fields = [
-            'first_name',
-            'last_name',
-            'email',
-            'phone',
+            'nome_completo',
             'foto',
-            'cidade',
+            'whatsapp',
+            'instagram',
+            'biografia',
             'estado',
-            'bio'
+            'cidade'
         ]
-
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['estado'].queryset = Estado.objects.all()
-        self.fields['cidade'].queryset = Cidade.objects.none()
-        
-        if 'estado' in self.data:
-            try:
-                estado_id = int(self.data.get('estado'))
-                self.fields['cidade'].queryset = Cidade.objects.filter(estado_id=estado_id)
-            except (ValueError, TypeError):
-                pass
-        elif self.instance.pk and self.instance.estado:
-            self.fields['cidade'].queryset = Cidade.objects.filter(estado=self.instance.estado)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Field('nome_completo', css_class='bg-dark-700 border-dark-600 text-white'),
+            Field('foto', css_class='bg-dark-700 border-dark-600 text-white'),
+            Field('whatsapp', css_class='bg-dark-700 border-dark-600 text-white'),
+            Field('instagram', css_class='bg-dark-700 border-dark-600 text-white'),
+            Field('biografia', css_class='bg-dark-700 border-dark-600 text-white'),
+            Field('estado', css_class='bg-dark-700 border-dark-600 text-white'),
+            Field('cidade', css_class='bg-dark-700 border-dark-600 text-white'),
+        )
 
     def clean_whatsapp(self):
         whatsapp = self.cleaned_data.get('whatsapp')

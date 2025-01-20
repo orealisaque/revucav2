@@ -18,83 +18,32 @@
             <form method="post" enctype="multipart/form-data" class="space-y-8" id="profileForm">
                 {% csrf_token %}
 
-                <!-- Foto do Perfil -->
-                <div class="space-y-4">
-                    <label class="block text-lg font-medium text-white">
-                        <i class="fas fa-camera mr-2"></i>Foto do Perfil
-                    </label>
-                    <div class="flex items-center space-x-6">
-                        <div class="relative w-32 h-32">
-                            <img id="profilePreview" 
-                                 src="{% if user.foto %}{{ user.foto.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
-                                 alt="Foto de perfil" 
-                                 class="w-full h-full object-cover rounded-full ring-4 ring-primary-500/30">
-                        </div>
-                        <div class="flex-1">
-                            {{ form.foto|as_crispy_field }}
-                            <p class="mt-2 text-sm text-gray-400">
-                                Recomendado: JPG, PNG. Máximo 2MB
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Informações Pessoais -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-white mb-2">
-                            <i class="fas fa-user mr-2"></i>Nome
-                        </label>
-                        {{ form.first_name|as_crispy_field }}
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-white mb-2">
-                            <i class="fas fa-user mr-2"></i>Sobrenome
-                        </label>
-                        {{ form.last_name|as_crispy_field }}
-                    </div>
+                <!-- Informações Básicas -->
+                <div class="bg-dark-800 rounded-lg p-6 shadow-lg space-y-4">
+                    <h3 class="text-lg font-medium text-white">
+                        <i class="fas fa-user mr-2"></i>Informações Básicas
+                    </h3>
+                    {{ form.nome_completo|as_crispy_field }}
+                    {{ form.foto|as_crispy_field }}
+                    {{ form.biografia|as_crispy_field }}
                 </div>
 
                 <!-- Contato -->
-                <div class="space-y-4">
+                <div class="bg-dark-800 rounded-lg p-6 shadow-lg space-y-4">
                     <h3 class="text-lg font-medium text-white">
                         <i class="fas fa-address-card mr-2"></i>Informações de Contato
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-white mb-2">
-                                <i class="fab fa-whatsapp mr-2 text-green-500"></i>WhatsApp
-                            </label>
-                            {{ form.whatsapp|as_crispy_field }}
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-white mb-2">
-                                <i class="fab fa-instagram mr-2 text-pink-500"></i>Instagram (opcional)
-                            </label>
-                            {{ form.instagram|as_crispy_field }}
-                        </div>
-                    </div>
+                    {{ form.whatsapp|as_crispy_field }}
+                    {{ form.instagram|as_crispy_field }}
                 </div>
 
                 <!-- Localização -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-medium text-white">Localização</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            {{ form.estado|as_crispy_field }}
-                        </div>
-                        <div>
-                            {{ form.cidade|as_crispy_field }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Biografia -->
-                <div class="space-y-4">
+                <div class="bg-dark-800 rounded-lg p-6 shadow-lg space-y-4">
                     <h3 class="text-lg font-medium text-white">
-                        <i class="fas fa-pen mr-2"></i>Sobre Você
+                        <i class="fas fa-map-marker-alt mr-2"></i>Localização
                     </h3>
-                    {{ form.bio|as_crispy_field }}
+                    {{ form.estado|as_crispy_field }}
+                    {{ form.cidade|as_crispy_field }}
                 </div>
 
                 <!-- Botões -->
