@@ -94,6 +94,7 @@ if DEBUG:
 # Configuração base do MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'config.middleware.ErrorLoggingMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -133,10 +134,12 @@ TEMPLATES = [
 # Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'staticfiles'),
+]
 
-# Simplified static file serving
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+# Configuração do Whitenoise para servir arquivos estáticos
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 MEDIA_URL = '/media/'
