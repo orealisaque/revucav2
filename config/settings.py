@@ -287,3 +287,7 @@ WHITENOISE_MAX_AGE = 31536000  # 1 ano em segundos
 # Cache de sessão
 SESSION_CACHE_ALIAS = "default"
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
+# Configuração para ambiente de produção
+if not DEBUG:
+    STATIC_URL = 'https://{your-domain}/static/'
