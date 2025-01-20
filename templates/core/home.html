@@ -309,9 +309,7 @@ function openAnuncioModal(anuncioId) {
                             <div class="bg-dark-700 p-4 rounded-lg">
                                 <div class="text-sm text-gray-400">
                                     <i class="fas fa-map-marker-alt mr-1"></i>
-                                    {% if anuncio.usuario.cidade_ref %}
-                                        {{ anuncio.usuario.cidade_ref.nome }} - {{ anuncio.usuario.estado_ref.sigla }}
-                                    {% endif %}
+                                    {{ anuncio.usuario.cidade }} - {{ anuncio.usuario.estado }}
                                 </div>
                             </div>
                             <div class="bg-dark-700 p-4 rounded-lg">

@@ -26,13 +26,20 @@ class HomeView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['anuncios'] = Anuncio.objects.filter(
-            status='aprovado'
+        
+        # Busca anúncios ativos e aprovados
+        anuncios = Anuncio.objects.filter(
+            Q(status='aprovado') & 
+            Q(ativo=True) &
+            Q(expira_em__gt=timezone.now())
         ).select_related(
             'usuario',
-            'usuario__cidade_ref',
-            'usuario__estado_ref'
-        ).order_by('-created_at')[:6]
+            'usuario__acompanhanteprofile'
+        ).prefetch_related(
+            'fotos'
+        ).order_by('-is_boosted', '-created_at')[:12]
+        
+        context['anuncios'] = anuncios
         return context
 
 def health_check(request):
