@@ -54,6 +54,14 @@ SECURE_SSL_REDIRECT = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 
+# Configurações de Sessão
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600  # 2 semanas em segundos
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_NAME = 'sessionid'
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_SAVE_EVERY_REQUEST = True
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -115,7 +123,7 @@ TEMPLATES = [
 # Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
 
 # Simplified static file serving
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
@@ -169,7 +177,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
-        'TIMEOUT': 300,  # 5 minutos
+        'TIMEOUT': 300,
     }
 }
 
@@ -251,3 +259,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
 
 # Whitenoise configuração
 WHITENOISE_MAX_AGE = 31536000  # 1 ano em segundos
+
+# Cache de sessão
+SESSION_CACHE_ALIAS = "default"
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
