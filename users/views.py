@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, TemplateView, DetailView
 from django.urls import reverse_lazy
 from .models import CustomUser, AcompanhanteProfile, Badge, Cidade, Estado
-from .forms import CustomSignupForm, ProfileUpdateForm, ProfileEditForm
+from .forms import CustomSignupForm, ProfileEditForm
 from ads.models import Anuncio, AnuncioFoto
 from datetime import date
 from billing.models import Subscription
