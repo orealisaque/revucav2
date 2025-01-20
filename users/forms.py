@@ -43,22 +43,6 @@ class CustomSignupForm(SignupForm):
         user.save()
         return user
 
-class ProfileUpdateForm(forms.ModelForm):
-    class Meta:
-        model = AcompanhanteProfile
-        fields = [
-            'nome_completo',
-            'foto',
-            'whatsapp',
-            'instagram',
-            'biografia',
-            'estado',
-            'cidade'
-        ]
-        widgets = {
-            'biografia': forms.Textarea(attrs={'rows': 4}),
-        }
-
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = AcompanhanteProfile

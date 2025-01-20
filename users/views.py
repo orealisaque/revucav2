@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, TemplateView, DetailView
 from django.urls import reverse_lazy
 from .models import CustomUser, AcompanhanteProfile, Badge, Cidade, Estado
-from .forms import CustomSignupForm, ProfileUpdateForm, UserProfileForm, ProfileEditForm
+from .forms import CustomSignupForm, ProfileUpdateForm, ProfileEditForm
 from ads.models import Anuncio, AnuncioFoto
 from datetime import date
 from billing.models import Subscription
@@ -158,14 +158,14 @@ def profile_update(request):
         profile = AcompanhanteProfile.objects.create(usuario=request.user)
 
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        form = ProfileEditForm(request.POST, request.FILES, instance=profile)
         
         if form.is_valid():
             form.save()
             messages.success(request, 'Perfil atualizado com sucesso!')
             return redirect('users:dashboard')
     else:
-        form = ProfileUpdateForm(instance=profile)
+        form = ProfileEditForm(instance=profile)
     
     return render(request, 'users/profile_update.html', {
         'form': form
