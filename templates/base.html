@@ -6,8 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Revuca{% endblock %}</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS com tema escuro -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#121827',
+                            800: '#1F2937',
+                            700: '#374151',
+                            600: '#4B5563',
+                        },
+                        primary: {
+                            50:  '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -50,7 +79,35 @@
     <script src="{% static 'js/main.js' %}"></script>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Estilos base */
+        body {
+            background-color: #121827;
+            color: #e5e7eb;
+        }
+
+        /* Estilos de botões */
+        .btn {
+            @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+        }
+        .btn-primary {
+            @apply bg-primary-600 hover:bg-primary-700 text-white;
+        }
+        .btn-secondary {
+            @apply bg-dark-700 hover:bg-dark-600 text-white;
+        }
+        .btn-danger {
+            @apply bg-red-600 hover:bg-red-700 text-white;
+        }
+        .btn-sm {
+            @apply px-3 py-1 text-sm;
+        }
+
+        /* Cards e containers */
+        .card {
+            @apply bg-dark-800 rounded-lg shadow-lg p-6;
+        }
+    </style>
     
     {% block extra_head %}{% endblock %}
 </head>
