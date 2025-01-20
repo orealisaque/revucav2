@@ -9,6 +9,7 @@ from PIL import Image
 import tempfile
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
@@ -55,31 +56,22 @@ class Anuncio(models.Model):
     STATUS_CHOICES = (
         ('pendente', 'Pendente'),
         ('aprovado', 'Aprovado'),
-        ('rejeitado', 'Rejeitado')
+        ('rejeitado', 'Rejeitado'),
     )
     
-    usuario = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE)
-    titulo = models.CharField(max_length=200)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    titulo = models.CharField(max_length=100)
     descricao = models.TextField()
-    preco = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2,
-        help_text="Preço por hora"
-    )
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
     cidade = models.CharField(max_length=100)
-    status = models.CharField(
-        max_length=20, 
-        choices=STATUS_CHOICES, 
-        default='pendente'
-    )
-    latitude = models.FloatField(null=True, blank=True)
-    longitude = models.FloatField(null=True, blank=True)
-    visualizacoes = models.IntegerField(default=0)
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    views = models.PositiveIntegerField(default=0)
     is_boosted = models.BooleanField(default=False)
+    views = models.IntegerField(default=0)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     boost_expira_em = models.DateTimeField(null=True, blank=True)
     boost_views_antes = models.IntegerField(default=0)
     
