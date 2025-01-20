@@ -95,7 +95,6 @@ if DEBUG:
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'config.middleware.ErrorLoggingMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -108,6 +107,9 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
     'billing.middleware.StripeContextMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE.insert(1, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'config.urls'
 
@@ -251,8 +253,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 if DEBUG:
-    MIDDLEWARE.insert(1, 'debug_toolbar.middleware.DebugToolbarMiddleware')
-    
     DEBUG_TOOLBAR_CONFIG = {
         'SHOW_TOOLBAR_CALLBACK': lambda request: True,
         'RESULTS_CACHE_SIZE': 3,

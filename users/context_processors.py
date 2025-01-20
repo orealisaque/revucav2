@@ -5,7 +5,7 @@ def user_progress(request):
     user = request.user
     fields = {
         'Nome completo': bool(user.get_full_name()),
-        'Foto do perfil': bool(user.foto_perfil),
+        'Foto do perfil': bool(user.foto),
         'WhatsApp': bool(user.phone),
         'Biografia': bool(user.bio),
         'Estado': bool(user.estado),
