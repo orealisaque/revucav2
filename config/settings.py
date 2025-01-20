@@ -19,6 +19,41 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', 'localhost']
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Database configuration
+if os.getenv('DATABASE_URL'):
+    tmpPostgres = urlparse(os.getenv('DATABASE_URL'))
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'neondb',  # Nome fixo do banco
+            'USER': tmpPostgres.username,
+            'PASSWORD': tmpPostgres.password,
+            'HOST': tmpPostgres.hostname,
+            'PORT': '5432',
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
+            'CONN_MAX_AGE': 0,  # Recomendado para Neon
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+# Configurações de conexão
+CONN_MAX_AGE = 60
+DATABASE_CONNECTION_POOLING = False  # Importante para o Neon
+
+# Configurações de SSL
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
