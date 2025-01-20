@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'sua-chave-secreta-padrao')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Vercel settings
 ALLOWED_HOSTS = ['*', '.vercel.app']
@@ -195,14 +195,28 @@ CACHE_MIDDLEWARE_KEY_PREFIX = 'revuca'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
     'root': {
         'handlers': ['console'],
-        'level': 'INFO',
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
 

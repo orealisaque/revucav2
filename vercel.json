@@ -19,6 +19,7 @@
     "env": {
         "DJANGO_SETTINGS_MODULE": "config.settings",
         "PYTHONPATH": ".",
-        "DJANGO_ALLOWED_HOSTS": ".vercel.app"
+        "DJANGO_ALLOWED_HOSTS": ".vercel.app",
+        "DEBUG": "True"
     }
 } 
