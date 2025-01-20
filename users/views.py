@@ -28,125 +28,39 @@ def profile(request):
     anuncios = request.user.anuncio_set.all().order_by('-created_at')
     return render(request, 'users/profile.html', {'anuncios': anuncios})
 
-@method_decorator(cache_page(60 * 5), name='dispatch')  # Cache por 5 minutos
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'users/dashboard.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        stripe_key = settings.STRIPE_PUBLIC_KEY
-        print(f"Stripe Public Key: {stripe_key}")  # Para debug
-        context['stripe_public_key'] = stripe_key
         user = self.request.user
         
-        # Cache key único para o usuário
-        cache_key = f'dashboard_data_{user.id}'
-        
-        # Tenta pegar dados do cache
-        cached_data = cache.get(cache_key)
-        if cached_data:
-            context.update(cached_data)
-            return context
-            
         try:
-            # Otimiza queries usando select_related e prefetch_related
-            anuncios = (Anuncio.objects
-                       .filter(usuario=user)
-                       .select_related('categoria')
-                       .prefetch_related(
-                           Prefetch('fotos', queryset=AnuncioFoto.objects.order_by('ordem')),
-                           'videos'
-                       ))
+            anuncios = Anuncio.objects.filter(usuario=user)
             
-            # Agrupa todas as contagens em uma única query
-            anuncios_stats = anuncios.aggregate(
-                total=Count('id'),
-                pendente=Count('id', filter=Q(status='pendente')),
-                aprovado=Count('id', filter=Q(status='aprovado')),
-                rejeitado=Count('id', filter=Q(status='rejeitado')),
-                total_views=Sum('views')
-            )
-            
-            # Pega apenas os últimos 5 anúncios
-            ultimos_anuncios = anuncios.order_by('-created_at')[:5]
-            
-            # Verifica se é usuário VIP
-            is_vip = user.subscription_set.filter(
-                plan__name='VIP',
-                is_active=True,
-                end_date__gt=timezone.now()
-            ).exists()
-            
-            if is_vip:
-                # Últimos 7 dias
-                end_date = timezone.now()
-                start_date = end_date - timedelta(days=7)
-                
-                # Busca visualizações agrupadas por dia
-                views_data = AnuncioView.objects.filter(
-                    anuncio__usuario=user,
-                    data__range=(start_date, end_date)
-                ).annotate(
-                    date=TruncDate('data')
-                ).values('date').annotate(
-                    count=Count('id')
-                ).order_by('date')
-                
-                # Formata dados para o gráfico
-                dates = []
-                counts = []
-                
-                current = start_date.date()
-                while current <= end_date.date():
-                    dates.append(current.strftime('%d/%m'))
-                    view_count = next(
-                        (item['count'] for item in views_data if item['date'] == current),
-                        0
-                    )
-                    counts.append(view_count)
-                    current += timedelta(days=1)
-                
-                context['views_chart_data'] = {
-                    'labels': dates,
-                    'data': counts
-                }
-            
-            data = {
+            context.update({
+                'user': user,
                 'plano_info': user.plano_atual,
                 'profile_progress': user.get_progress(),
                 'total_progress': user.get_total_progress(),
                 'next_badge': user.get_next_badge(),
-                'badge_progress': user.get_badge_progress(),
-                'anuncios_stats': anuncios_stats,
-                'ultimos_anuncios': ultimos_anuncios,
-                'review_count': user.reviews_received.count(),
-                'total_views': anuncios_stats['total_views'] or 0,
+                'anuncios_stats': {
+                    'total': anuncios.count(),
+                    'aprovado': anuncios.filter(status='aprovado').count(),
+                },
+                'total_views': user.get_total_views(),
                 'profile_complete': user.is_profile_complete(),
-            }
-            
-            # Salva no cache
-            cache.set(cache_key, data, timeout=60 * 5)
-            
-            context.update(data)
+            })
             
         except Exception as e:
             print(f"Erro no dashboard: {str(e)}")
             context.update({
-                'plano_info': user.plano_atual,
-                'profile_progress': [],
-                'total_progress': 0,
-                'next_badge': None,
-                'badge_progress': 0,
                 'anuncios_stats': {
                     'total': 0,
-                    'pendente': 0,
                     'aprovado': 0,
-                    'rejeitado': 0
                 },
-                'ultimos_anuncios': [],
-                'review_count': 0,
                 'total_views': 0,
-                'profile_complete': False,
             })
         
         return context

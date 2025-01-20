@@ -70,7 +70,7 @@
 
                         <!-- No perfil do usuário -->
                         <div class="text-gray-400 text-sm mt-2">
-                            {% if user.cidade %}
+                            {% if user.cidade and user.estado %}
                                 <i class="fas fa-map-marker-alt mr-1"></i>
                                 {{ user.cidade }} - {{ user.estado }}
                             {% endif %}
